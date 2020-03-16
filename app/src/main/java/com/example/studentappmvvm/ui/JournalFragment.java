@@ -35,7 +35,7 @@ public class JournalFragment extends Fragment {
 
         mJournalAdapter = new JournalAdapter(lesson -> {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                ((MainActivity) requireActivity()).show(lesson);
+                ((MainActivity) requireActivity()).showLesson(lesson);
             }
         });
         mBinding.lessonsList.setAdapter(mJournalAdapter);

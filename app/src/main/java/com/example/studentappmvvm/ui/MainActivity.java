@@ -91,8 +91,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.place_holder, fragment).commit();
     }
 
-    public void show(Lesson lesson) {
+    public void showLesson(Lesson lesson) {
         LessonFragment fragment = LessonFragment.forLesson(lesson);
         getSupportFragmentManager().beginTransaction().addToBackStack("lesson").replace(R.id.place_holder, fragment, null).commit();
+    }
+
+    public void showPrefs(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().addToBackStack("prefs").replace(R.id.place_holder, fragment).commit();
     }
 }

@@ -17,6 +17,7 @@ import com.example.studentappmvvm.databinding.FragmentProfileBinding;
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private FragmentProfileBinding mBinding;
+    private AccountPrefsFragment accountPrefsFragment = new AccountPrefsFragment();
 
     @Nullable
     @Override
@@ -37,7 +38,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.accountbtn:
                 if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                    ((MainActivity) requireActivity()).navView.setVisibility(View.GONE);
+                    //((MainActivity) requireActivity()).navView.setVisibility(View.GONE);
+                    ((MainActivity) requireActivity()).showPrefs(accountPrefsFragment);
                 }
                 break;
             case R.id.appearencebtn:
