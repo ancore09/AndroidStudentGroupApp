@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="isLoading"
+            type="boolean" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout4"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:focusableInTouchMode="true">
+
+<!--    <ListView-->
+<!--        android:id="@+id/messages_view"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="#E4E4E4"-->
+<!--        android:divider="#fff"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/linearLayout5"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messagesList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10.0sp"
+        android:padding="4dip"
+        android:background="@color/cardview_light_background"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layoutManager="LinearLayoutManager"
+        app:visibleGone="@{!isLoading}"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messagesList">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:ems="10"
+            android:hint="Write a message"
+            android:inputType="text"
+            android:paddingHorizontal="10dp"
+            android:text="" />
+
+        <ImageButton
+            android:id="@+id/sendbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="10dp"
+            android:background="@drawable/ic_send_black_24dp"
+            android:padding="20dp"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
