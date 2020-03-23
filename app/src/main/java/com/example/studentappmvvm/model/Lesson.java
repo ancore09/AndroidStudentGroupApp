@@ -10,4 +10,6 @@ public interface Lesson {
     String getMark();
 
     String getHomework();
+
+    String getComment();
 }

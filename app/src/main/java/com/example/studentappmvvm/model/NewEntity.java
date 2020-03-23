@@ -1,13 +1,18 @@
 package com.example.studentappmvvm.model;
 
 public class NewEntity implements New{
+    String datedmy;
     String title;
     String body;
     String epilogue;
-    int id;
+    int ID;
 
     public int getId() {
-        return id;
+        return ID;
+    }
+
+    public String getDateDMY() {
+        return datedmy;
     }
 
     public String getTitle() {

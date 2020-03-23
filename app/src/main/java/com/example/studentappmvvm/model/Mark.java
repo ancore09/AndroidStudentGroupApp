@@ -1,15 +1,15 @@
 package com.example.studentappmvvm.model;
 
 public class Mark {
-    int id;
+    int ID;
     byte mark;
 
     public int getId() {
-        return id;
+        return ID;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.ID = id;
     }
 
     public byte getMark() {

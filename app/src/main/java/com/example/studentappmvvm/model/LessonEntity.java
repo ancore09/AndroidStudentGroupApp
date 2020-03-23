@@ -1,14 +1,15 @@
 package com.example.studentappmvvm.model;
 
 public class LessonEntity implements Lesson {
-    String date;
+    String datedmy;
     String theme;
     String homework;
     String mark;
-    int id;
+    String profcomment;
+    int ID;
 
     public void setDate(String date) {
-        this.date = date;
+        this.datedmy = date;
     }
 
     public void setTheme(String theme) {
@@ -24,12 +25,12 @@ public class LessonEntity implements Lesson {
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.ID = id;
     }
 
     @Override
     public String getDate() {
-        return date;
+        return datedmy;
     }
 
     @Override
@@ -43,12 +44,17 @@ public class LessonEntity implements Lesson {
     }
 
     @Override
+    public String getComment() {
+        return profcomment;
+    }
+
+    @Override
     public String getMark() {
         return mark;
     }
 
     @Override
     public int getId() {
-        return id;
+        return ID;
     }
 }

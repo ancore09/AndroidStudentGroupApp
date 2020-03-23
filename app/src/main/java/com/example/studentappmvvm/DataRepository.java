@@ -90,7 +90,7 @@ public class DataRepository {
 
     public LiveData<List<NewEntity>> loadNews() {
         MutableLiveData<List<NewEntity>> data = new MutableLiveData<>();
-        ws.getNews().enqueue(new Callback<List<NewEntity>>() {
+        ws.getNews(1).enqueue(new Callback<List<NewEntity>>() {
             @Override
             public void onResponse(Call<List<NewEntity>> call, Response<List<NewEntity>> response) {
                 data.setValue(response.body());
@@ -130,7 +130,7 @@ public class DataRepository {
 
     public LiveData<List<LessonEntity>> loadJournal() {
         MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
-        ws.getLessons().enqueue(new Callback<List<LessonEntity>>() {
+        ws.getLessons(1, 1).enqueue(new Callback<List<LessonEntity>>() {
             @Override
             public void onResponse(Call<List<LessonEntity>> call, Response<List<LessonEntity>> response) {
                 data.setValue(response.body());

@@ -8,4 +8,6 @@ public interface New {
     String getBody();
 
     String getEpilogue();
+
+    String getDateDMY();
 }

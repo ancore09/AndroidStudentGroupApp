@@ -12,15 +12,24 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface Webservice {
-    @GET("/getNews")
-    Call<List<NewEntity>> getNews();
+//    @GET("/getNews")
+//    Call<List<NewEntity>> getNews();
 
-    @GET("/getTable")
-    Call<List<LessonEntity>> getLessons();
+//    @GET("/getTable")
+//    Call<List<LessonEntity>> getLessons();
 
     @GET("/getMessages")
     Call<List<MessageEntity>> getMessages();
 
     @GET("/getUserMarks")
     Call<List<Mark>> getMarks(/*@Query("course") String course,*/ @Query("login") String login);
+
+    @GET("/getNews")
+    Call<List<NewEntity>> getNews(@Query("groupid") int group_id);
+
+    @GET("/getLessons")
+    Call<List<LessonEntity>> getLessons(@Query("groupid") int group_id, @Query("loginid") int user_id);
+//
+//    @GET("/getUserMarks")
+//    Call<List<Mark>> getMarks();
 }

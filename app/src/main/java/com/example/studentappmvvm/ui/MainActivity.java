@@ -22,6 +22,9 @@ import android.widget.TextView;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
@@ -98,5 +101,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void showPrefs(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().addToBackStack("prefs").replace(R.id.place_holder, fragment).commit();
+    }
+
+    static String sha256(String input) throws NoSuchAlgorithmException {
+        MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
+        byte[] result = mDigest.digest(input.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < result.length; i++) {
+            sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
     }
 }
