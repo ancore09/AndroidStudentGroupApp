@@ -43,7 +43,7 @@ public class DataRepository {
     private static DataRepository sInstance;
     private LiveData<List<NewEntity>> mObservableNews;
     private LiveData<List<LessonEntity>> mObservableLessons;
-    private LiveData<List<MessageEntity>> mObservableMessages;
+    private MutableLiveData<List<MessageEntity>> mObservableMessages;
     private LiveData<List<Mark>> mObservableMarks;
 
     private DataRepository() {
@@ -64,6 +64,7 @@ public class DataRepository {
             try {
                 msg = gson.fromJson(args[0].toString(), MessageEntity.class);
                 mObservableMessages.getValue().add(msg);
+                mObservableMessages.postValue(mObservableMessages.getValue());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -80,6 +81,22 @@ public class DataRepository {
             }
         }
         return sInstance;
+    }
+
+    public void sendMessage(MessageEntity messageEntity) {
+//        mObservableMessages.getValue().add(messageEntity);
+//        mObservableMessages.setValue(mObservableMessages.getValue());
+        Gson gson = new Gson();
+        String json = gson.toJson(messageEntity);
+        //mObservableMessages.getValue().add(messageEntity);
+        mSocket.emit("message", json);
+    }
+
+    public LiveData<List<LessonEntity>> searchLessons(String query) {
+        List<LessonEntity> filteredList = mObservableLessons.getValue().stream().filter(lessonEntity -> lessonEntity.getDate().contains(query)).collect(Collectors.toList());
+        MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
+        data.setValue(filteredList);
+        return data;
     }
 
     public LiveData<List<Mark>> loadMarks() {
@@ -104,7 +121,7 @@ public class DataRepository {
         return data;
     }
 
-    public LiveData<List<MessageEntity>> loadMessages() {
+    public MutableLiveData<List<MessageEntity>> loadMessages() {
         MutableLiveData<List<MessageEntity>> data = new MutableLiveData<>();
         List<MessageEntity> failData = new ArrayList<>();
         ws.getMessages().enqueue(new Callback<List<MessageEntity>>() {
@@ -119,13 +136,6 @@ public class DataRepository {
             }
         });
         return data;
-    }
-
-    public void sendMessage(MessageEntity messageEntity) {
-        Gson gson = new Gson();
-        String json = gson.toJson(messageEntity);
-        //mObservableMessages.getValue().add(messageEntity);
-        mSocket.emit("message", json);
     }
 
     public LiveData<List<LessonEntity>> loadJournal() {
@@ -144,20 +154,13 @@ public class DataRepository {
         return data;
     }
 
-    public LiveData<List<LessonEntity>> searchLessons(String query) {
-        List<LessonEntity> filteredList = mObservableLessons.getValue().stream().filter(lessonEntity -> lessonEntity.getDate().contains(query)).collect(Collectors.toList());
-        MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
-        data.setValue(filteredList);
-        return data;
-    }
-
     public LiveData<List<NewEntity>> getNews() {
         return mObservableNews;
     }
     public LiveData<List<LessonEntity>> getLessons() {
         return mObservableLessons;
     }
-    public LiveData<List<MessageEntity>> getMessages() {
+    public MutableLiveData<List<MessageEntity>> getMessages() {
         return mObservableMessages;
     }
     public LiveData<List<Mark>> getMarks() {

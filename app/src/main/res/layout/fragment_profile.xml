@@ -11,8 +11,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:layout_height="match_parent">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
@@ -21,7 +20,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/bob"
-        app:civ_border_color="#1A1A1A"
+        app:civ_border_color="@color/material_on_background_emphasis_high_type"
         app:civ_border_width="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,8 +32,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="16dp"
-        android:text="Bob"
-        android:textColor="#000000"
+        android:text="Bobby"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         android:textSize="24sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +48,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="Ross"
-        android:textColor="#000000"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         android:textSize="24sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Settings"
-        android:textColor="#000000"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

@@ -15,6 +15,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/title_news"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/material_on_background_emphasis_medium"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

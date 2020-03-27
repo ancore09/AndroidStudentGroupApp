@@ -2,6 +2,7 @@ package com.example.studentappmvvm.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.studentappmvvm.R;
@@ -85,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
             });
 
             getSupportFragmentManager().beginTransaction().add(R.id.place_holder, news, NewsFragment.TAG).commit();
+
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
     }
 

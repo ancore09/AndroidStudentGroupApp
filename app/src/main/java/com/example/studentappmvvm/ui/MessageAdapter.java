@@ -1,16 +1,21 @@
 package com.example.studentappmvvm.ui;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.MessageBinding;
 import com.example.studentappmvvm.model.Message;
+import com.example.studentappmvvm.model.MessageEntity;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
@@ -22,7 +27,32 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             mMessagesList = messagesList;
             notifyItemRangeInserted(0, messagesList.size());
         } else {
+            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                @Override
+                public int getOldListSize() {
+                    return mMessagesList.size();
+                }
 
+                @Override
+                public int getNewListSize() {
+                    return messagesList.size();
+                }
+
+                @Override
+                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                    return mMessagesList.get(oldItemPosition).getId() ==
+                            messagesList.get(newItemPosition).getId();
+                }
+
+                @Override
+                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                    Message newProduct = messagesList.get(newItemPosition);
+                    Message oldProduct = mMessagesList.get(oldItemPosition);
+                    return newProduct.getId() == oldProduct.getId();
+                }
+            });
+            mMessagesList = messagesList;
+            result.dispatchUpdatesTo(this);
         }
     }
 
@@ -42,6 +72,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public int getItemCount() {
         return mMessagesList == null ? 0 : mMessagesList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mMessagesList.get(position).getId();
     }
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {

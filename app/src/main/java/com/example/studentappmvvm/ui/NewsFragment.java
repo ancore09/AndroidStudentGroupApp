@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -31,6 +32,8 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false);
+
+        mBinding.newsList.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.line));
 
         mNewsAdapter = new NewsAdapter();
         mBinding.newsList.setAdapter(mNewsAdapter);

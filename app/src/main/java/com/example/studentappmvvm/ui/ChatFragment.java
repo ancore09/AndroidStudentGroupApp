@@ -1,6 +1,7 @@
 package com.example.studentappmvvm.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.studentappmvvm.R;
@@ -23,6 +26,7 @@ import java.util.Random;
 
 public class ChatFragment extends Fragment {
     public static final String TAG = "ChatFragment";
+    int k =0;
 
     MessageAdapter mMessageAdapter;
     FragmentChatBinding mBinding;
@@ -48,15 +52,18 @@ public class ChatFragment extends Fragment {
         subscribeUI(viewModel.getMessages());
     }
 
-    private void subscribeUI(LiveData<List<MessageEntity>> liveData) {
+    private void subscribeUI(MediatorLiveData<List<MessageEntity>> liveData) {
         liveData.observe(getViewLifecycleOwner(), mMessages -> {
             if (mMessages != null) {
                 mBinding.setIsLoading(false);
                 mMessageAdapter.setMessagesList(mMessages);
+                Log.d("VIEW", "OBSERVED MODEL IN VIEW");
+                mMessageAdapter.notifyDataSetChanged();
             } else {
                 mBinding.setIsLoading(true);
             }
             mBinding.executePendingBindings();
+            mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
         });
     }
 
@@ -68,7 +75,9 @@ public class ChatFragment extends Fragment {
                 btu = true;
                 text = text.replace("#", "");
             }
-            viewModel.sendMessage(new MessageEntity(text, new MemberDataEntity(getRandomName(), getRandomColor()), btu));
+            viewModel.sendMessage(new MessageEntity(k, text, new MemberDataEntity(getRandomName(), getRandomColor()), btu));
+            k++;
+            mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
         }
     }
 

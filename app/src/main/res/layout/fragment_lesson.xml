@@ -15,8 +15,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout3"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/textView4"
@@ -26,7 +25,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Theme"
-        android:textColor="#0E0E0E"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,6 +42,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@{lesson.theme}"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:textColor="@color/material_on_surface_emphasis_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +57,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="Homework"
-        android:textColor="#000000"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,6 +73,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@{lesson.homework}"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:textColor="@color/material_on_surface_emphasis_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +87,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="@{lesson.date}"
-        android:textColor="#000000"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/themeLes" />
 
@@ -94,7 +100,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:text="@{lesson.mark}"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/green_200"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

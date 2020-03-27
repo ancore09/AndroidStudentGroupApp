@@ -11,7 +11,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background"
         android:orientation="vertical">
 
     <RelativeLayout
@@ -63,7 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="4dp"
-            android:text="@{message.memberData.name}"/>
+            android:text="@{message.memberData.name}"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/material_on_background_emphasis_medium"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,6 +78,8 @@
             android:elevation="2dp"
             android:textSize="18dp"
             android:text="@{message.body}"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="#fff"
             />
     </RelativeLayout>
     </LinearLayout>

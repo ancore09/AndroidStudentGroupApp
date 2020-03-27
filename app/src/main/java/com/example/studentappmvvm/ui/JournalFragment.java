@@ -33,6 +33,8 @@ public class JournalFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_journal, container, false);
 
+        mBinding.lessonsList.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.line));
+
         mJournalAdapter = new JournalAdapter(lesson -> {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
                 ((MainActivity) requireActivity()).showLesson(lesson);

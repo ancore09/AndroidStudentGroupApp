@@ -1,14 +1,21 @@
 package com.example.studentappmvvm.model;
 
 public class MessageEntity implements Message {
+    private int ID;
     private String body;
     private MemberDataEntity memberData;
     private boolean belongsToCurrentUser;
 
-    public MessageEntity(String text, MemberDataEntity data, boolean belongsToCurrentUser) {
+    public MessageEntity(int id, String text, MemberDataEntity data, boolean belongsToCurrentUser) {
+        this.ID = id;
         this.body = text;
         this.memberData = data;
         this.belongsToCurrentUser = belongsToCurrentUser;
+    }
+
+    @Override
+    public int getId() {
+        return ID;
     }
 
     @Override

@@ -32,7 +32,6 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp"
         android:padding="4dip"
-        android:background="@color/cardview_light_background"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
         app:layout_constraintStart_toStartOf="@+id/linearLayout5"
         app:layout_constraintTop_toTopOf="parent"
@@ -49,16 +48,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messagesList">
 
-        <EditText
-            android:id="@+id/editText"
+<!--        <EditText-->
+<!--            android:id="@+id/editText"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="2"-->
+<!--            android:ems="10"-->
+<!--            android:hint="Write a message"-->
+<!--            android:inputType="text"-->
+<!--            android:paddingHorizontal="10dp"-->
+<!--            android:text="" />-->
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/labuda"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:ems="10"
-            android:hint="Write a message"
-            android:inputType="text"
-            android:paddingHorizontal="10dp"
-            android:text="" />
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintTop_toBottomOf="@+id/label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Message"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/material_on_background_emphasis_medium"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
             android:id="@+id/sendbtn"

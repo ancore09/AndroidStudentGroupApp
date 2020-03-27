@@ -11,17 +11,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/rounded_rectangle_colored">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:text="@{newitem.title}"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +37,7 @@
         android:layout_marginEnd="8dp"
         android:text="@{newitem.body}"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/material_on_background_emphasis_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +52,7 @@
         android:layout_marginBottom="15dp"
         android:text="@{newitem.epilogue}"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/material_on_background_emphasis_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
