@@ -1,5 +1,6 @@
 package com.example.studentappmvvm.ui;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -88,4 +89,5 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             this.binding = binding;
         }
     }
+
 }

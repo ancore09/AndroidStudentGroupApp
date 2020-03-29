@@ -5,6 +5,7 @@ public class MessageEntity implements Message {
     private String body;
     private MemberDataEntity memberData;
     private boolean belongsToCurrentUser;
+    private String fileHash;
 
     public MessageEntity(int id, String text, MemberDataEntity data, boolean belongsToCurrentUser) {
         this.ID = id;
@@ -35,5 +36,13 @@ public class MessageEntity implements Message {
 
     public void setBelongsToCurrentUser(boolean belongsToCurrentUser) {
         this.belongsToCurrentUser = belongsToCurrentUser;
+    }
+
+    public String getFileHash() {
+        return fileHash;
+    }
+
+    public void setFileHash(String fileHash) {
+        this.fileHash = fileHash;
     }
 }

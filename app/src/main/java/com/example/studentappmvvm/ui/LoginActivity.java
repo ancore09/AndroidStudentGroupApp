@@ -1,27 +1,32 @@
 package com.example.studentappmvvm.ui;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.studentappmvvm.DataRepository;
 import com.example.studentappmvvm.R;
+import com.example.studentappmvvm.model.UserEntity;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.function.Function;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private final DataRepository mRepository = DataRepository.getInstance();
+
+    SharedPreferences sharedPreferences;
 
     EditText _emailText;
     EditText _passwordText;
@@ -29,11 +34,15 @@ public class LoginActivity extends AppCompatActivity {
     TextView _signupLink;
     TextInputLayout _passwordLayout;
     TextInputLayout _emailLayout;
+    ProgressBar _progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //setTheme(R.style.Theme_MyApp);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        sharedPreferences = getSharedPreferences("StudentApp", MODE_PRIVATE);
 
         _emailText = findViewById(R.id.input_email);
         _passwordText = findViewById(R.id.input_password);
@@ -41,11 +50,17 @@ public class LoginActivity extends AppCompatActivity {
         _signupLink = findViewById(R.id.link_signup);
         _passwordLayout = findViewById(R.id.passLayout);
         _emailLayout = findViewById(R.id.emailLayout);
+        _progressBar = findViewById(R.id.progressBar);
 
-        _loginButton.setOnClickListener(v -> login());
+        _loginButton.setOnClickListener(v -> {
+            try {
+                login();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        });
 
         _signupLink.setOnClickListener(v -> {
-            // Start the Signup activity
             Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
             startActivityForResult(intent, REQUEST_SIGNUP);
             finish();
@@ -53,36 +68,48 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void login() {
+    public void login() throws NoSuchAlgorithmException {
         Log.d(TAG, "Login");
 
-        if (!validate()) {
-            onLoginFailed();
-            return;
-        }
+//        if (!validate()) {
+//            onLoginFailed();
+//            return;
+//        }
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.Theme_MyApp);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
+        _progressBar.setVisibility(View.VISIBLE);
 
-        String email = _emailText.getText().toString();
+        String login = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
+        mRepository.authUser(login, MainActivity.sha1(password), userEntity -> {
+            if (userEntity != null) {
+                _progressBar.setVisibility(View.INVISIBLE);
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        //onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 1);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putInt("id", userEntity.getID());
+                editor.putString("login", userEntity.getLogin());
+                editor.putString("firstname", userEntity.getFirstName());
+                editor.putString("lastname", userEntity.getLastName());
+                editor.putString("nickname", userEntity.getNickName());
+                editor.apply();
+
+                onLoginSuccess();
+                return 1;
+            } else {
+                _progressBar.setVisibility(View.INVISIBLE);
+                onLoginFailed();
+                return 0;
+            }
+        });
+
+//        new android.os.Handler().postDelayed(() -> {
+//                    onLoginSuccess();
+//                    //onLoginFailed();
+//                    _progressBar.setVisibility(View.INVISIBLE);
+//                }, 3000);
     }
 
 
@@ -92,8 +119,7 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
+                // TODO: Implement successful signup logic
                 this.finish();
             }
         }
@@ -101,7 +127,6 @@ public class LoginActivity extends AppCompatActivity {
 
 //    @Override
 //    public void onBackPressed() {
-//        // Disable going back to the MainActivity
 //        moveTaskToBack(true);
 //    }
 

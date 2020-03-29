@@ -1,5 +1,9 @@
 package com.example.studentappmvvm;
 
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.FileUtils;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -7,23 +11,35 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
+import com.example.studentappmvvm.model.MemberDataEntity;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.model.NewEntity;
 import com.example.studentappmvvm.model.User;
+import com.example.studentappmvvm.model.UserEntity;
+import com.example.studentappmvvm.ui.ChatFragment;
+import com.example.studentappmvvm.ui.MainActivity;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.ResponseBody;
+
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,6 +62,8 @@ public class DataRepository {
     private MutableLiveData<List<MessageEntity>> mObservableMessages;
     private LiveData<List<Mark>> mObservableMarks;
 
+    private UserEntity mUser;
+
     private DataRepository() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.1.129:3000/")
@@ -53,10 +71,12 @@ public class DataRepository {
                 .build();
 
         ws = retrofit.create(Webservice.class);
-        mObservableNews = loadNews();
-        mObservableLessons = loadJournal();
-        mObservableMessages = loadMessages();
-        mObservableMarks = loadMarks();
+        firstLoad();
+        //mObservableNews = loadNews();
+        //mObservableLessons = loadJournal();
+        //mObservableMessages = loadMessages();
+        //mObservableMarks = loadMarks();
+        //mUser = UserEntity.getInstance();
 
         mSocket.on("message", args -> {
             Gson gson = new Gson();
@@ -83,6 +103,15 @@ public class DataRepository {
         return sInstance;
     }
 
+    public void firstLoad() {
+        mUser = UserEntity.getInstance();
+        mObservableNews = loadNews();
+        mObservableLessons = loadJournal();
+        mObservableMessages = loadMessages();
+        mObservableMarks = loadMarks();
+        mSocket.connect();
+    }
+
     public void sendMessage(MessageEntity messageEntity) {
 //        mObservableMessages.getValue().add(messageEntity);
 //        mObservableMessages.setValue(mObservableMessages.getValue());
@@ -97,6 +126,72 @@ public class DataRepository {
         MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
         data.setValue(filteredList);
         return data;
+    }
+
+    public void authUser(String login, String hash, Function<UserEntity, Integer> func) {
+        ws.authUser(login, hash).enqueue(new Callback<UserEntity>() {
+            @Override
+            public void onResponse(Call<UserEntity> call, Response<UserEntity> response) {
+                mUser.setID(response.body().getID());
+                mUser.setFirstName(response.body().getFirstName());
+                mUser.setLastName(response.body().getLastName());
+                mUser.setNickName(response.body().getNickName());
+                mUser.setLogin(response.body().getLogin());
+                mUser.setMemberdata_ID(response.body().getMemberdata_ID());
+                func.apply(mUser);
+
+                ws.getMemberData(mUser.getMemberdata_ID()).enqueue(new Callback<MemberDataEntity>() {
+                    @Override
+                    public void onResponse(Call<MemberDataEntity> call, Response<MemberDataEntity> response) {
+                        response.body().setColor(ChatFragment.getRandomColor());
+                        mUser.setMemberData(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<MemberDataEntity> call, Throwable t) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<UserEntity> call, Throwable t) {
+                mUser = null;
+                func.apply(null);
+            }
+        });
+
+//        ws.getMemberData(mUser.getMemberdata_ID()).enqueue(new Callback<MemberDataEntity>() {
+//            @Override
+//            public void onResponse(Call<MemberDataEntity> call, Response<MemberDataEntity> response) {
+//                mUser.setMemberData(response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MemberDataEntity> call, Throwable t) {
+//
+//            }
+//        });
+    }
+
+    public void uploadFile(String path) {
+        File file = new File(path);
+
+        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);
+
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), fbody);
+
+        ws.uploadFile(body).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     public LiveData<List<Mark>> loadMarks() {
@@ -140,7 +235,7 @@ public class DataRepository {
 
     public LiveData<List<LessonEntity>> loadJournal() {
         MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
-        ws.getLessons(1, 1).enqueue(new Callback<List<LessonEntity>>() {
+        ws.getLessons(1, mUser.getID()).enqueue(new Callback<List<LessonEntity>>() {
             @Override
             public void onResponse(Call<List<LessonEntity>> call, Response<List<LessonEntity>> response) {
                 data.setValue(response.body());
@@ -165,5 +260,8 @@ public class DataRepository {
     }
     public LiveData<List<Mark>> getMarks() {
         return mObservableMarks;
+    }
+    public UserEntity getUser() {
+        return mUser;
     }
 }

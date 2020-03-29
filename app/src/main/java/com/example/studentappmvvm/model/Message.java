@@ -5,4 +5,5 @@ public interface Message {
     String getBody();
     MemberDataEntity getMemberData();
     boolean isBelongsToCurrentUser();
+    String getFileHash();
 }

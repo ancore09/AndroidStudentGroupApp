@@ -15,7 +15,7 @@
 
         <ImageView android:src="?attr/logo"
             android:layout_width="wrap_content"
-            android:layout_height="72dp"
+            android:layout_height="128dp"
             android:layout_marginBottom="24dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="96dp"/>
@@ -36,6 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/material_on_background_emphasis_medium"
                 android:hint="Email" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -58,6 +60,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/material_on_background_emphasis_medium"
                 android:hint="Password" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -76,8 +80,18 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:text="No account yet? Create one"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/material_on_background_emphasis_medium"
             android:gravity="center"
             android:textSize="16dip"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminateTint="@color/blue_200"/>
 
     </LinearLayout>
 </ScrollView>

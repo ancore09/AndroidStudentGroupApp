@@ -1,12 +1,12 @@
 package com.example.studentappmvvm.ui;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +24,11 @@ public class SignupActivity extends AppCompatActivity {
     EditText _reEnterPasswordText;
     Button _signupButton;
     TextView _loginLink;
+    ProgressBar _progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //setTheme(R.style.Theme_MyApp);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
@@ -36,11 +38,11 @@ public class SignupActivity extends AppCompatActivity {
         _reEnterPasswordText = findViewById(R.id.input_reEnterPassword);
         _signupButton = findViewById(R.id.btn_signup);
         _loginLink = findViewById(R.id.link_login);
+        _progressBar = findViewById(R.id.progressBar);
 
         _signupButton.setOnClickListener(v -> signup());
 
         _loginLink.setOnClickListener(v -> {
-            // Finish the registration screen and return to the Login activity
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
@@ -50,7 +52,6 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Disable going back to the MainActivity
         moveTaskToBack(true);
     }
 
@@ -64,28 +65,19 @@ public class SignupActivity extends AppCompatActivity {
 
         _signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.Theme_MyApp);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+        _progressBar.setVisibility(View.VISIBLE);
 
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        // TODO: Implement your own signup logic here.
+        // TODO: Implement your own signup logic
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
+        new android.os.Handler().postDelayed(() -> {
+                    onSignupSuccess();
+                    // onSignupFailed();
+                    _progressBar.setVisibility(View.INVISIBLE);
                 }, 3000);
     }
 

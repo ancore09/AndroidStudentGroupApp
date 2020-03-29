@@ -35,6 +35,20 @@
             android:text="@{message.body}"
             />
 
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/message_body"
+            android:layout_alignEnd="@+id/message_body"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="0dp"
+            android:cropToPadding="true"
+            android:maxWidth="100dp"
+            android:maxHeight="100dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -51,6 +65,7 @@
             android:layout_alignParentLeft="true"
             android:scaleType="centerInside"
             android:background="@drawable/circle"
+            android:backgroundTint="@{message.memberData.actColor}"
             android:layout_width="34dp"
             android:layout_height="34dp" />
 
@@ -81,6 +96,20 @@
             android:textAppearance="?attr/textAppearanceBody1"
             android:textColor="#fff"
             />
+
+        <ImageView
+            android:id="@+id/imgViewt"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/message_bodyt"
+            android:layout_alignStart="@+id/message_bodyt"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="8dp"
+            android:cropToPadding="true"
+            android:maxWidth="100dp"
+            android:maxHeight="100dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent" />
     </RelativeLayout>
     </LinearLayout>
 </layout>
