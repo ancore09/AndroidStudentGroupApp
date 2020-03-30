@@ -1,5 +1,6 @@
 package com.example.studentappmvvm;
 
+import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberData;
@@ -43,5 +44,5 @@ public interface Webservice {
 
     @Multipart
     @POST("/uploadFile")
-    Call<ResponseBody> uploadFile(@Part MultipartBody.Part file);
+    Call<FileResponse> uploadFile(@Part MultipartBody.Part file);
 }

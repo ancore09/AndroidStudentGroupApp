@@ -1,6 +1,5 @@
 package com.example.studentappmvvm.ui;
 
-import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,20 +12,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.FragmentChatBinding;
-import com.example.studentappmvvm.model.MemberDataEntity;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.viewmodel.ChatViewModel;
 
@@ -51,7 +46,7 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false);
-        mMessageAdapter = new MessageAdapter();
+        mMessageAdapter = new MessageAdapter(this);
         mBinding.messagesList.setAdapter(mMessageAdapter);
         mBinding.setIsLoading(true);
         return mBinding.getRoot();

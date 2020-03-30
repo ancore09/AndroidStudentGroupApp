@@ -5,6 +5,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 
@@ -22,8 +24,9 @@ public class NewsListViewModel extends AndroidViewModel {
         super(application);
         mSavedStateHandler = savedStateHandle;
         mRepository = DataRepository.getInstance();
+        //mRepository.loadNews();
 
-        mNews = mRepository.getNews();
+        mNews = mRepository.loadNews();
     }
 
     public LiveData<List<NewEntity>> getNews() {

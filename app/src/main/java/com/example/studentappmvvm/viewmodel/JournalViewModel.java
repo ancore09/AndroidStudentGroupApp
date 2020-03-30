@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 
@@ -37,9 +38,6 @@ public class JournalViewModel extends AndroidViewModel {
     }
 
     public void setQuery(CharSequence query) {
-        // Save the user's query into the SavedStateHandle.
-        // This ensures that we retain the value across process death
-        // and is used as the input into the Transformations.switchMap above
         mSavedStateHandler.set("QUERY", query);
     }
 

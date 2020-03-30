@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingVertical="10dp"
         android:paddingRight="15dp"
@@ -35,24 +35,36 @@
             android:text="@{message.body}"
             />
 
+        <View
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_below="@+id/message_body"
+            android:layout_alignEnd="@+id/message_body"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="0dp"
+            android:background="@drawable/my_message"
+            android:cropToPadding="true"
+            app:visibleGone="@{message.hasImage()}" />
+
         <ImageView
             android:id="@+id/imgView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_below="@+id/message_body"
             android:layout_alignEnd="@+id/message_body"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="5dp"
             android:cropToPadding="true"
             android:maxWidth="100dp"
             android:maxHeight="100dp"
             android:scaleType="centerCrop"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibleGone="@{message.hasImage()}" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingVertical="10dp"
         android:paddingLeft="15dp"
@@ -97,19 +109,31 @@
             android:textColor="#fff"
             />
 
+        <View
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_below="@+id/message_bodyt"
+            android:layout_alignStart="@+id/message_bodyt"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/their_message"
+            android:cropToPadding="true"
+            app:visibleGone="@{message.hasImage()}" />
+
         <ImageView
             android:id="@+id/imgViewt"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_below="@+id/message_bodyt"
             android:layout_alignStart="@+id/message_bodyt"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="13dp"
             android:cropToPadding="true"
             android:maxWidth="100dp"
             android:maxHeight="100dp"
             android:scaleType="centerCrop"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibleGone="@{message.hasImage()}" />
     </RelativeLayout>
     </LinearLayout>
 </layout>

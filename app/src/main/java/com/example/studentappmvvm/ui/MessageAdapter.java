@@ -10,6 +10,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.MessageBinding;
 import com.example.studentappmvvm.model.Message;
@@ -22,6 +26,11 @@ import java.util.List;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
 
     List<? extends Message> mMessagesList;
+    ChatFragment fragment;
+
+    public MessageAdapter(ChatFragment fragment) {
+        this.fragment = fragment;
+    }
 
     public void setMessagesList(final List<? extends Message> messagesList) {
         if (mMessagesList == null) {
@@ -67,6 +76,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         holder.binding.setMessage(mMessagesList.get(position));
+        if (mMessagesList.get(position).hasImage()) {
+            String url = "http://192.168.1.129:3000/" + mMessagesList.get(position).getFileHash();
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(15));
+            Glide.with(fragment).load(url).error(R.drawable.circle).apply(requestOptions).into(holder.binding.imgViewt);
+            Glide.with(fragment).load(url).error(R.drawable.circle).apply(requestOptions).into(holder.binding.imgView);
+        }
         holder.binding.executePendingBindings();
     }
 

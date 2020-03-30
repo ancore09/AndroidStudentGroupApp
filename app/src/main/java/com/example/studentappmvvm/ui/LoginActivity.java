@@ -15,11 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.studentappmvvm.DataRepository;
 import com.example.studentappmvvm.R;
-import com.example.studentappmvvm.model.UserEntity;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.function.Function;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -83,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         String login = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        mRepository.authUser(login, MainActivity.sha1(password), userEntity -> {
+        mRepository.authUser(login, AppActivity.sha1(password), userEntity -> {
             if (userEntity != null) {
                 _progressBar.setVisibility(View.INVISIBLE);
 
@@ -104,12 +102,6 @@ public class LoginActivity extends AppCompatActivity {
                 return 0;
             }
         });
-
-//        new android.os.Handler().postDelayed(() -> {
-//                    onLoginSuccess();
-//                    //onLoginFailed();
-//                    _progressBar.setVisibility(View.INVISIBLE);
-//                }, 3000);
     }
 
 
@@ -125,14 +117,15 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        moveTaskToBack(true);
-//    }
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        finish();
+        Intent intent = new Intent(this, AppActivity.class);
+        startActivity(intent);
     }
 
     public void onLoginFailed() {

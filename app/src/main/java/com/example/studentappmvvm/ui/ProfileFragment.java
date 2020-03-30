@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.FragmentProfileBinding;
-import com.example.studentappmvvm.model.UserEntity;
 import com.example.studentappmvvm.viewmodel.ProfileViewModel;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
@@ -45,7 +44,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            ((MainActivity) requireActivity()).navView.setVisibility(View.VISIBLE);
+            ((AppActivity) requireActivity()).navView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -54,8 +53,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.accountbtn:
                 if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                    //((MainActivity) requireActivity()).navView.setVisibility(View.GONE);
-                    //((MainActivity) requireActivity()).showPrefs(accountPrefsFragment);
+                    //((AppActivity) requireActivity()).navView.setVisibility(View.GONE);
+                    //((AppActivity) requireActivity()).showPrefs(accountPrefsFragment);
                     Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                     getActivity().finish();

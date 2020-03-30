@@ -6,4 +6,5 @@ public interface Message {
     MemberDataEntity getMemberData();
     boolean isBelongsToCurrentUser();
     String getFileHash();
+    boolean hasImage();
 }

@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateHandle;
 
 import com.example.studentappmvvm.DataRepository;
+import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.model.UserEntity;
 
@@ -24,6 +25,9 @@ public class ChatViewModel extends AndroidViewModel {
     private final MediatorLiveData<List<MessageEntity>> mMessagesList;
     private final UserEntity mUser;
 
+    private boolean nextMessageHasFile = false;
+    private FileResponse nextMessageFileHash;
+
     public ChatViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
         mSavedStateHandler = savedStateHandle;
@@ -31,10 +35,6 @@ public class ChatViewModel extends AndroidViewModel {
         mUser = UserEntity.getInstance();
 
         mMessagesList = new MediatorLiveData<>();
-        //mMessagesList.setValue(mRepository.getMessages().getValue());
-//        mRepository.getMessages().observeForever(messageEntities -> {
-//            mMessagesList.setValue(messageEntities);
-//        });
 
         mMessagesList.addSource(mRepository.getMessages(), messageEntities -> {
             mMessagesList.setValue(messageEntities);
@@ -48,11 +48,16 @@ public class ChatViewModel extends AndroidViewModel {
     }
 
     public void sendMessage(MessageEntity messageEntity) {
+        if (nextMessageHasFile) {
+            messageEntity.setFileHash(nextMessageFileHash.getName());
+            nextMessageHasFile = false;
+        }
         mRepository.sendMessage(messageEntity);
     }
 
     public void uploadFile(String path) {
-        mRepository.uploadFile(path);
+        nextMessageFileHash = mRepository.uploadFile(path);
+        nextMessageHasFile = true;
     }
 
     public UserEntity getUser() {
