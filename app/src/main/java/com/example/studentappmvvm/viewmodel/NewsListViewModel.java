@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 
@@ -18,18 +19,26 @@ import java.util.List;
 public class NewsListViewModel extends AndroidViewModel {
     private final SavedStateHandle mSavedStateHandler;
     private final DataRepository mRepository;
-    private final LiveData<List<NewEntity>> mNews;
+    private final MediatorLiveData<List<NewEntity>> mNews;
 
     public NewsListViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
         mSavedStateHandler = savedStateHandle;
         mRepository = DataRepository.getInstance();
-        //mRepository.loadNews();
 
-        mNews = mRepository.loadNews();
+        mNews = new MediatorLiveData<>();
+        mNews.addSource(mRepository.getNews(), newEntities -> {
+            mNews.setValue(newEntities);
+        }); //observing livedata from repository
     }
 
-    public LiveData<List<NewEntity>> getNews() {
+    public MediatorLiveData<List<NewEntity>> getNews() {
         return mNews;
     }
+
+    public void updateNews() {
+        mRepository.updateNews(); //updating news in repository
+        //mRepository.postLoad();
+    }
+
 }

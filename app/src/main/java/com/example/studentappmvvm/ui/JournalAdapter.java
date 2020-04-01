@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.LessonAdapterItemBinding;
+import com.example.studentappmvvm.databinding.LessonNirmAdapterItemBinding;
 import com.example.studentappmvvm.model.Lesson;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.LessonVi
     @NonNull
     @Override
     public LessonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LessonAdapterItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.lesson_adapter_item, parent, false);
+        LessonNirmAdapterItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.lesson_nirm_adapter_item, parent, false);
         binding.setCallback(mLessonClickCallback);
         return new LessonViewHolder(binding);
     }
@@ -87,9 +88,9 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.LessonVi
 
     static class LessonViewHolder extends RecyclerView.ViewHolder{
 
-        final LessonAdapterItemBinding binding;
+        final LessonNirmAdapterItemBinding binding;
 
-        public LessonViewHolder(LessonAdapterItemBinding binding) {
+        public LessonViewHolder(LessonNirmAdapterItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

@@ -38,9 +38,7 @@ public class ChatViewModel extends AndroidViewModel {
 
         mMessagesList.addSource(mRepository.getMessages(), messageEntities -> {
             mMessagesList.setValue(messageEntities);
-            //mMessagesList.setValue(mRepository.getMessages().getValue());
-            Log.d("VIEWMODEL", "OBSERVED REPO IN MODEL");
-        });
+        }); //observing livedata in repository
     }
 
     public MediatorLiveData<List<MessageEntity>> getMessages() {

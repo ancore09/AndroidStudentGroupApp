@@ -70,7 +70,7 @@ public class DataRepository {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
+        }); //listener for  "message" event
     }
 
     public static DataRepository getInstance() {
@@ -82,14 +82,14 @@ public class DataRepository {
             }
         }
         return sInstance;
-    }
+    } //there is only one instance of repository in the app
 
     public void firstLoad() {
-        mUser = UserEntity.getInstance();
+        mUser = UserEntity.getInstance(); //instance of user required for login
     }
 
     public void postLoad() {
-        mObservableNews = loadNews();
+        mObservableNews = loadNews(listMutableLiveData -> 0);
         mObservableLessons = loadJournal();
         mObservableMessages = loadMessages();
         mObservableMarks = loadMarks();
@@ -107,7 +107,7 @@ public class DataRepository {
         MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
         data.setValue(filteredList);
         return data;
-    }
+    } //filtering lessons list with query
 
     public void authUser(String login, String hash, Function<UserEntity, Integer> func) {
         ws.authUser(login, hash).enqueue(new Callback<UserEntity>() {
@@ -124,7 +124,7 @@ public class DataRepository {
                 ws.getMemberData(mUser.getMemberdata_ID()).enqueue(new Callback<MemberDataEntity>() {
                     @Override
                     public void onResponse(Call<MemberDataEntity> call, Response<MemberDataEntity> response) {
-                        response.body().setColor(ChatFragment.getRandomColor());
+                        //response.body().setColor(ChatFragment.getRandomColor());
                         mUser.setMemberData(response.body());
                     }
 
@@ -140,7 +140,7 @@ public class DataRepository {
                 func.apply(null);
             }
         });
-    }
+    } //trying to get user and its memberdata from server
 
     public FileResponse uploadFile(String path) {
         File file = new File(path);
@@ -162,7 +162,7 @@ public class DataRepository {
             }
         });
         return name;
-    }
+    } //single file/photo uploading
 
     public LiveData<List<Mark>> loadMarks() {
         MutableLiveData<List<Mark>> data = new MutableLiveData<>();
@@ -170,12 +170,20 @@ public class DataRepository {
         return data;
     }
 
-    public MutableLiveData<List<NewEntity>> loadNews() {
+    public void updateNews() {
+        loadNews(listMutableLiveData -> {
+            mObservableNews.setValue(listMutableLiveData.getValue());
+            return 1;
+        });
+    } //updating news using callback
+
+    public MutableLiveData<List<NewEntity>> loadNews(Function<MutableLiveData<List<NewEntity>>, Integer> func) {
         MutableLiveData<List<NewEntity>> data = new MutableLiveData<>();
         ws.getNews(1).enqueue(new Callback<List<NewEntity>>() {
             @Override
             public void onResponse(Call<List<NewEntity>> call, Response<List<NewEntity>> response) {
-                data.postValue(response.body());
+                data.setValue(response.body());
+                func.apply(data);
             }
 
             @Override
@@ -184,7 +192,7 @@ public class DataRepository {
             }
         });
         return data;
-    }
+    } //loading/updating news from server
 
     public MutableLiveData<List<MessageEntity>> loadMessages() {
         MutableLiveData<List<MessageEntity>> data = new MutableLiveData<>();
@@ -201,7 +209,7 @@ public class DataRepository {
             }
         });
         return data;
-    }
+    } //loading chat messages from server
 
     public MutableLiveData<List<LessonEntity>> loadJournal() {
         MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
@@ -217,7 +225,7 @@ public class DataRepository {
             }
         });
         return data;
-    }
+    } //loading/updating journal(lessons) from server
 
     public MutableLiveData<List<NewEntity>> getNews() {
         return mObservableNews;

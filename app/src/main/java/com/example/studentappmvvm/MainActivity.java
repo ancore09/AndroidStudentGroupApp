@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("StudentApp", MODE_PRIVATE);
 
         if (sharedPreferences.getInt("id", -1) != -1) {
-            
+
         }
 
         Intent intent = new Intent(this, LoginActivity.class);

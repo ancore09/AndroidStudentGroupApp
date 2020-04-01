@@ -79,7 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (mMessagesList.get(position).hasImage()) {
             String url = "http://192.168.1.129:3000/" + mMessagesList.get(position).getFileHash();
             RequestOptions requestOptions = new RequestOptions();
-            requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(15));
+            requestOptions = requestOptions.transforms(new RoundedCorners(50));
             Glide.with(fragment).load(url).error(R.drawable.circle).apply(requestOptions).into(holder.binding.imgViewt);
             Glide.with(fragment).load(url).error(R.drawable.circle).apply(requestOptions).into(holder.binding.imgView);
         }

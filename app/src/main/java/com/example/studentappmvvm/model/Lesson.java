@@ -12,4 +12,6 @@ public interface Lesson {
     String getHomework();
 
     String getComment();
+
+    String getTime();
 }

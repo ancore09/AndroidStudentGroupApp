@@ -6,6 +6,7 @@ public class LessonEntity implements Lesson {
     String homework;
     String mark;
     String profcomment;
+    String times;
     int ID;
 
     public void setDate(String date) {
@@ -46,6 +47,11 @@ public class LessonEntity implements Lesson {
     @Override
     public String getComment() {
         return profcomment;
+    }
+
+    @Override
+    public String getTime() {
+        return times;
     }
 
     @Override

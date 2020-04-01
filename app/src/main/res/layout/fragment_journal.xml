@@ -17,9 +17,11 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/containerL"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:transitionName="transition">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,20 +29,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:orientation="horizontal">
-
-<!--            <androidx.appcompat.widget.AppCompatEditText-->
-<!--                android:id="@+id/lessons_search_box"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:hint="Search by date"/>-->
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/lessons_search_btn"-->
-<!--                android:layout_width="48dp"-->
-<!--                android:layout_height="48dp"-->
-<!--                android:background="@drawable/ic_search_black_24dp"-->
-<!--                android:backgroundTint="@color/green_200"/>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -88,14 +76,37 @@
             android:textAlignment="center"
             app:visibleGone="@{isLoading}"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lessonsList"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10.0sp"
-            app:layoutManager="LinearLayoutManager"
-            app:visibleGone="@{!isLoading}"/>
+            app:srlEnableOverScrollBounce="true"
+            app:visibleGone="@{!isLoading}">
+
+            <com.scwang.smartrefresh.header.MaterialHeader
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lessonsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10.0sp"
+                app:layoutManager="LinearLayoutManager" />
+
+            <com.scwang.smartrefresh.layout.footer.FalsifyFooter
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:src="@drawable/bob"/>
+
+            </com.scwang.smartrefresh.layout.footer.FalsifyFooter>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     </LinearLayout>
 </layout>

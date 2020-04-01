@@ -29,8 +29,10 @@
 <!--    </ListView>-->
 
     <LinearLayout
+        android:id="@+id/containerL"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:transitionName="transition"
         android:orientation="vertical">
 
         <TextView
@@ -42,14 +44,37 @@
             android:textAlignment="center"
             app:visibleGone="@{isLoading}"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/newsList"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10.0sp"
-            app:layoutManager="LinearLayoutManager"
-            app:visibleGone="@{!isLoading}"/>
+            app:srlEnableOverScrollBounce="true"
+            app:visibleGone="@{!isLoading}">
+
+            <com.scwang.smartrefresh.header.MaterialHeader
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/newsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10.0sp"
+                app:layoutManager="LinearLayoutManager" />
+
+            <com.scwang.smartrefresh.layout.footer.FalsifyFooter
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:src="@drawable/bob"/>
+
+            </com.scwang.smartrefresh.layout.footer.FalsifyFooter>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     </LinearLayout>
 </layout>

@@ -9,11 +9,12 @@
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout4"
+    android:id="@+id/containerL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:transitionName="transition">
 
 <!--    <ListView-->
 <!--        android:id="@+id/messages_view"-->
@@ -25,15 +26,15 @@
 <!--        app:layout_constraintStart_toStartOf="@+id/linearLayout5"-->
 <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <ImageView
-        android:id = "@+id/imgView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:maxWidth="100dp"
-        android:maxHeight="100dp"
-        android:cropToPadding="true"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"/>
+<!--    <ImageView-->
+<!--        android:id = "@+id/imgView"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:maxWidth="100dp"-->
+<!--        android:maxHeight="100dp"-->
+<!--        android:cropToPadding="true"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        app:layout_constraintTop_toTopOf="parent"/>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messagesList"

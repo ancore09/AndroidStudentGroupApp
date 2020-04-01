@@ -2,6 +2,7 @@ package com.example.studentappmvvm.ui;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 
@@ -9,16 +10,24 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.NewAdapterItemBinding;
+import com.example.studentappmvvm.databinding.NewCardAdapterItemBinding;
 import com.example.studentappmvvm.model.New;
+import com.google.android.material.transition.MaterialContainerTransform;
 
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewViewHolder> {
 
     List<? extends New> mNewsList;
+
+    public List<? extends New> getNewsList(){
+        return mNewsList;
+    }
 
     public void setNews(final List<? extends New> newsList) {
         if (mNewsList == null) {
@@ -60,13 +69,25 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewViewHolder>
     @NonNull
     @Override
     public NewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        NewAdapterItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.new_adapter_item, parent, false);
+        NewCardAdapterItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.new_card_adapter_item, parent, false);
         return new NewViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NewViewHolder holder, int position) {
         holder.binding.setNewitem(mNewsList.get(position));
+        holder.binding.cardView.setOnClickListener(view -> {
+            if (holder.binding.expandableLayout.getVisibility() == View.GONE) {
+                TransitionManager.beginDelayedTransition(holder.binding.cardView, new AutoTransition());
+                holder.binding.expandableLayout.setVisibility(View.VISIBLE);
+                //holder.binding.expandBtn.setText("Collapse");
+            } else {
+                TransitionManager.beginDelayedTransition(holder.binding.cardView, new AutoTransition());
+                holder.binding.expandableLayout.setVisibility(View.GONE);
+
+                //holder.binding.expandBtn.setText("Expand");
+            }
+        });
         holder.binding.executePendingBindings();
     }
 
@@ -77,9 +98,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewViewHolder>
 
     static class NewViewHolder extends RecyclerView.ViewHolder {
 
-        final NewAdapterItemBinding binding;
+        final NewCardAdapterItemBinding binding;
 
-        public NewViewHolder(NewAdapterItemBinding binding) {
+        public NewViewHolder(NewCardAdapterItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

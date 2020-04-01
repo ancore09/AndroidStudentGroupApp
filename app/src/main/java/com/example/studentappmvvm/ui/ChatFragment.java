@@ -35,12 +35,11 @@ import static android.app.Activity.RESULT_OK;
 public class ChatFragment extends Fragment {
     public static final String TAG = "ChatFragment";
     private static int RESULT_LOAD_IMAGE = 1;
-    int k =0;
-    Uri selectedImage = null;
+    private int k = 0; //used as message id
 
-    MessageAdapter mMessageAdapter;
-    FragmentChatBinding mBinding;
-    ChatViewModel viewModel;
+    private MessageAdapter mMessageAdapter;
+    private FragmentChatBinding mBinding;
+    private ChatViewModel viewModel;
 
     @Nullable
     @Override
@@ -57,9 +56,7 @@ public class ChatFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(ChatViewModel.class);
-        mBinding.sendbtn.setOnClickListener(v -> {
-            sendMessage(mBinding.editText.getText().toString(), viewModel);
-        });
+        mBinding.sendbtn.setOnClickListener(v -> sendMessage(mBinding.editText.getText().toString(), viewModel));
 
         mBinding.attachbtn.setOnClickListener(v -> {
             attachPhoto();
@@ -72,7 +69,7 @@ public class ChatFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            selectedImage = data.getData();
+            Uri selectedImage = data.getData();
 
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
             Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
@@ -82,7 +79,7 @@ public class ChatFragment extends Fragment {
             cursor.close();
 
             viewModel.uploadFile(filePath);
-        }
+        } //getting actual filepath and calling viewmodel to upload file
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
@@ -106,7 +103,7 @@ public class ChatFragment extends Fragment {
             }
             mBinding.executePendingBindings();
             mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
-        });
+        }); //observing viewmodel livedata
     }
 
     void sendMessage(String text, ChatViewModel viewModel) {
@@ -115,9 +112,9 @@ public class ChatFragment extends Fragment {
             boolean btu = false;
             if (text.charAt(0) == '#') {
                 btu = true;
-                text = text.replace("#", "");
+                text = text.replace("#", ""); //for testing purposes, messages starting with # act like a sent one, without - like a received
             }
-            viewModel.sendMessage(new MessageEntity(k, text, viewModel.getUser().getMemberData(), btu));
+            viewModel.sendMessage(new MessageEntity(k, text, viewModel.getUser().getMemberData(), btu)); //sending new message
             k++;
             mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
         }
@@ -126,7 +123,7 @@ public class ChatFragment extends Fragment {
     void attachPhoto() {
         Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, RESULT_LOAD_IMAGE);
-    }
+    } //starting gallery activity to choose photo
 
     @Override
     public void onDestroyView() {

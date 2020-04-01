@@ -53,7 +53,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.accountbtn:
                 if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                    //((AppActivity) requireActivity()).navView.setVisibility(View.GONE);
+
+                    ((AppActivity) requireActivity()).navView.setVisibility(View.GONE);
+
                     //((AppActivity) requireActivity()).showPrefs(accountPrefsFragment);
                     Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
                     startActivity(intent);

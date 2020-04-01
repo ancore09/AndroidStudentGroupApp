@@ -34,7 +34,7 @@ public class JournalViewModel extends AndroidViewModel {
                         return mRepository.getLessons();
                     }
                     return mRepository.searchLessons(""+query);
-                });
+                }); //switchmap override livedata value using filtered with query list
     }
 
     public void setQuery(CharSequence query) {

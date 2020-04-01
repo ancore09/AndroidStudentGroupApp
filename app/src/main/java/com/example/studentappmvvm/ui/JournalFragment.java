@@ -34,12 +34,17 @@ public class JournalFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_journal, container, false);
 
         mBinding.lessonsList.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.line));
+        mBinding.refreshLayout.setOnRefreshListener(refreshLayout -> {
+            refreshLayout.finishRefresh(3000);
+        });
 
         mJournalAdapter = new JournalAdapter(lesson -> {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                ((AppActivity) requireActivity()).showLesson(lesson);
+                //((AppActivity) requireActivity()).showLesson(lesson);
+                LessonFragment lessonFragment = LessonFragment.forLesson(lesson);
+                ((AppActivity) requireActivity()).performTransition(lessonFragment, this);
             }
-        });
+        }); //constructor receives callback for items to show corresponding lesson fragment
         mBinding.lessonsList.setAdapter(mJournalAdapter);
         mBinding.setIsLoading(true);
         return mBinding.getRoot();

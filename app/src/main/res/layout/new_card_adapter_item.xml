@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="newitem"
+            type="com.example.studentappmvvm.model.New" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:strokeWidth="1dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/blue_200"
+        android:animateLayoutChanges="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="194dp"
+                android:src="@drawable/bob" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Title, secondary and supporting text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{newitem.title}"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:textColor="@color/material_on_background_emphasis_high_type"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{newitem.dateDMY}"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@color/material_on_background_emphasis_high_type"
+                    />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:text="Supporting Text"-->
+<!--                    android:textAppearance="?attr/textAppearanceBody2"-->
+<!--                    android:textColor="@color/material_on_background_emphasis_high_type"-->
+<!--                    />-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/expandableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@{newitem.body}"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/material_on_background_emphasis_medium" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="@{newitem.epilogue}"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/material_on_background_emphasis_medium" />
+
+            </LinearLayout>
+
+<!--            <Button-->
+<!--                android:id="@+id/expandBtn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:text="Expand"-->
+<!--                android:textColor="@color/material_on_background_emphasis_high_type"-->
+<!--                android:background="@drawable/ripple_effect"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:layout_marginStart="4dp"/>-->
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</layout>
