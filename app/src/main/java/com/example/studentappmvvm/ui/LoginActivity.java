@@ -88,10 +88,12 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 editor.putInt("id", userEntity.getID());
+                editor.putInt("memberDataId", userEntity.getMemberdata_ID());
                 editor.putString("login", userEntity.getLogin());
                 editor.putString("firstname", userEntity.getFirstName());
                 editor.putString("lastname", userEntity.getLastName());
                 editor.putString("nickname", userEntity.getNickName());
+                editor.putString("color", userEntity.getMemberData().getColor());
                 editor.apply();
 
                 onLoginSuccess();

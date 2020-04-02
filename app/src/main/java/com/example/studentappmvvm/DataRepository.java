@@ -52,7 +52,7 @@ public class DataRepository {
     private MutableLiveData<List<NewEntity>> mObservableNews;
     private MutableLiveData<List<LessonEntity>> mObservableLessons;
     private MutableLiveData<List<MessageEntity>> mObservableMessages;
-    private MutableLiveData<List<GroupEntity>> mGroups;
+    private MutableLiveData<List<GroupEntity>> mGroups = new MutableLiveData<>();
     private UserEntity mUser;
 
     private DataRepository() {
@@ -118,7 +118,6 @@ public class DataRepository {
     }
 
     public void authUser(String login, String hash, Function<UserEntity, Integer> func) {
-        mGroups = new MutableLiveData<>();
         ws.authUser(login, hash).enqueue(new Callback<UserEntity>() {
             @Override
             public void onResponse(Call<UserEntity> call, Response<UserEntity> response) {
@@ -134,37 +133,37 @@ public class DataRepository {
                     public void onResponse(Call<MemberDataEntity> call, Response<MemberDataEntity> response) {
                         //response.body().setColor(ChatFragment.getRandomColor());
                         mUser.setMemberData(response.body());
-                    }
 
-                    @Override
-                    public void onFailure(Call<MemberDataEntity> call, Throwable t) {
-
-                    }
-                });
-
-                ws.getGrouping(mUser.getID()).enqueue(new Callback<List<GroupingEntity>>() {
-                    @Override
-                    public void onResponse(Call<List<GroupingEntity>> call, Response<List<GroupingEntity>> response) {
-                        int[] ids = new int[response.body().size()];
-                        for (int i = 0; i < ids.length; i++) {
-                            ids[i] = response.body().get(i).getGroupID();
-                        }
-                        ws.getGroup(ids).enqueue(new Callback<List<GroupEntity>>() {
+                        ws.getGrouping(mUser.getID()).enqueue(new Callback<List<GroupingEntity>>() {
                             @Override
-                            public void onResponse(Call<List<GroupEntity>> call, Response<List<GroupEntity>> response) {
-                                mGroups.postValue(response.body());
-                                func.apply(mUser);
+                            public void onResponse(Call<List<GroupingEntity>> call, Response<List<GroupingEntity>> response) {
+                                int[] ids = new int[response.body().size()];
+                                for (int i = 0; i < ids.length; i++) {
+                                    ids[i] = response.body().get(i).getGroupID();
+                                }
+                                ws.getGroup(ids).enqueue(new Callback<List<GroupEntity>>() {
+                                    @Override
+                                    public void onResponse(Call<List<GroupEntity>> call, Response<List<GroupEntity>> response) {
+                                        mGroups.postValue(response.body());
+                                        func.apply(mUser);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<List<GroupEntity>> call, Throwable t) {
+
+                                    }
+                                });
                             }
 
                             @Override
-                            public void onFailure(Call<List<GroupEntity>> call, Throwable t) {
+                            public void onFailure(Call<List<GroupingEntity>> call, Throwable t) {
 
                             }
                         });
                     }
 
                     @Override
-                    public void onFailure(Call<List<GroupingEntity>> call, Throwable t) {
+                    public void onFailure(Call<MemberDataEntity> call, Throwable t) {
 
                     }
                 });
@@ -176,6 +175,35 @@ public class DataRepository {
             }
         });
     } //trying to get user and its memberdata and groups from server
+
+    public void getGroups(Function<Integer, Integer> func) {
+        ws.getGrouping(mUser.getID()).enqueue(new Callback<List<GroupingEntity>>() {
+            @Override
+            public void onResponse(Call<List<GroupingEntity>> call, Response<List<GroupingEntity>> response) {
+                int[] ids = new int[response.body().size()];
+                for (int i = 0; i < ids.length; i++) {
+                    ids[i] = response.body().get(i).getGroupID();
+                }
+                ws.getGroup(ids).enqueue(new Callback<List<GroupEntity>>() {
+                    @Override
+                    public void onResponse(Call<List<GroupEntity>> call, Response<List<GroupEntity>> response) {
+                        mGroups.postValue(response.body());
+                        func.apply(1);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<GroupEntity>> call, Throwable t) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<GroupingEntity>> call, Throwable t) {
+
+            }
+        });
+    }
 
 
     public void updateNews() {
