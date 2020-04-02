@@ -1,6 +1,9 @@
 package com.example.studentappmvvm;
 
+import com.example.studentappmvvm.model.Evaluation;
+import com.example.studentappmvvm.model.EvaluationEntity;
 import com.example.studentappmvvm.model.FileResponse;
+import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberData;
@@ -34,13 +37,19 @@ public interface Webservice {
     Call<List<MessageEntity>> getMessages();
 
     @GET("/getUserMarks")
-    Call<List<Mark>> getMarks(/*@Query("course") String course,*/ @Query("login") String login);
+    Call<List<Mark>> getMarks(@Query("login") String login, @Query("lessonsids") int[] les_ids);
+
+    @GET("/getEvaluation")
+    Call<List<EvaluationEntity>> getEvaluation(@Query("login") String login);
 
     @GET("/getNews")
     Call<List<NewEntity>> getNews(@Query("groupid") int group_id);
 
     @GET("/getLessons")
-    Call<List<LessonEntity>> getLessons(@Query("groupid") int group_id, @Query("loginid") int user_id);
+    Call<List<LessonEntity>> getLessons(@Query("groupid") int[] group_id, @Query("loginid") int user_id);
+
+    @GET("/getGroup")
+    Call<List<GroupEntity>> getGroup(@Query("id") int[] id);
 
     @Multipart
     @POST("/uploadFile")

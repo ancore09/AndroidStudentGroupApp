@@ -8,6 +8,8 @@ public class LessonEntity implements Lesson {
     String profcomment;
     String times;
     int ID;
+    int group_id;
+    String group;
 
     public void setDate(String date) {
         this.datedmy = date;
@@ -56,11 +58,33 @@ public class LessonEntity implements Lesson {
 
     @Override
     public String getMark() {
-        return mark;
+        if (mark != null) {
+            return mark;
+        } else {
+            return "Нет оценки";
+        }
     }
 
     @Override
     public int getId() {
         return ID;
+    }
+
+    @Override
+    public int getGroupID() {
+        return group_id;
+    }
+
+    @Override
+    public String getGroupName() {
+        return group;
+    }
+
+    public void setGroup_id(int group_id) {
+        this.group_id = group_id;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }

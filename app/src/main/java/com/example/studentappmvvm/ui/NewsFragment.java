@@ -62,7 +62,7 @@ public class NewsFragment extends Fragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(mBinding.newsList); //attaching callback
 
-        mNewsAdapter = new NewsAdapter();
+        mNewsAdapter = new NewsAdapter(this);
         mBinding.newsList.setAdapter(mNewsAdapter);
         mBinding.setIsLoading(true);
         return mBinding.getRoot();
@@ -77,7 +77,7 @@ public class NewsFragment extends Fragment {
 
         mBinding.refreshLayout.setOnRefreshListener(refreshLayout -> {
             viewModel.updateNews();
-            refreshLayout.finishRefresh(100);
+            refreshLayout.finishRefresh(1000);
         }); //listener of pulling down the recyclerview
     }
 

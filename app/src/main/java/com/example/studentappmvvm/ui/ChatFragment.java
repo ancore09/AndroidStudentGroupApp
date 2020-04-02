@@ -19,9 +19,15 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.FragmentChatBinding;
+import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.viewmodel.ChatViewModel;
 
@@ -29,6 +35,7 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -48,6 +55,8 @@ public class ChatFragment extends Fragment {
         mMessageAdapter = new MessageAdapter(this);
         mBinding.messagesList.setAdapter(mMessageAdapter);
         mBinding.setIsLoading(true);
+        mBinding.imgView.setVisibility(View.GONE);
+        mBinding.relLayout.setVisibility(View.GONE);
         return mBinding.getRoot();
     }
 
@@ -60,6 +69,10 @@ public class ChatFragment extends Fragment {
 
         mBinding.attachbtn.setOnClickListener(v -> {
             attachPhoto();
+        });
+
+        mBinding.clearbtn.setOnClickListener(v -> {
+            clearPhoto();
         });
         subscribeUI(viewModel.getMessages());
     }
@@ -78,7 +91,17 @@ public class ChatFragment extends Fragment {
             String filePath = cursor.getString(columnIndex);
             cursor.close();
 
-            viewModel.uploadFile(filePath);
+            viewModel.uploadFile(filePath, fileResponse -> {
+                String url = "http://192.168.1.129:3000/" + fileResponse.getName();
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions = requestOptions.transforms(new RoundedCorners(30));
+                Glide.with(this).load(url).error(R.drawable.circle).apply(requestOptions).into(mBinding.imgView);
+                return 0;
+            });
+            TransitionManager.beginDelayedTransition(mBinding.relLayout, new AutoTransition());
+            mBinding.imgView.setVisibility(View.VISIBLE);
+            mBinding.relLayout.setVisibility(View.VISIBLE);
+            mBinding.linearLayout5.setBackgroundResource(R.color.blue_800);
         } //getting actual filepath and calling viewmodel to upload file
     }
 
@@ -117,6 +140,9 @@ public class ChatFragment extends Fragment {
             viewModel.sendMessage(new MessageEntity(k, text, viewModel.getUser().getMemberData(), btu)); //sending new message
             k++;
             mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
+            TransitionManager.beginDelayedTransition(mBinding.relLayout, new AutoTransition());
+            mBinding.imgView.setVisibility(View.GONE);
+            mBinding.relLayout.setVisibility(View.GONE);
         }
     }
 
@@ -125,6 +151,13 @@ public class ChatFragment extends Fragment {
         startActivityForResult(i, RESULT_LOAD_IMAGE);
     } //starting gallery activity to choose photo
 
+    void clearPhoto() {
+        viewModel.clearPhoto();
+        TransitionManager.beginDelayedTransition(mBinding.relLayout, new AutoTransition());
+        mBinding.imgView.setVisibility(View.GONE);
+        mBinding.relLayout.setVisibility(View.GONE);
+        mBinding.linearLayout5.setBackgroundResource(R.color.blue_900);
+    }
     @Override
     public void onDestroyView() {
         mBinding = null;

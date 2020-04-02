@@ -5,6 +5,7 @@ public class NewEntity implements New{
     String title;
     String body;
     String epilogue;
+    String filehash;
     int ID;
 
     public int getId() {
@@ -13,6 +14,10 @@ public class NewEntity implements New{
 
     public String getDateDMY() {
         return datedmy;
+    }
+
+    public String getFileHash() {
+        return filehash;
     }
 
     public String getTitle() {
@@ -25,5 +30,9 @@ public class NewEntity implements New{
 
     public String getEpilogue() {
         return epilogue;
+    }
+
+    public boolean hasImage() {
+        return filehash != null;
     }
 }

@@ -76,6 +76,12 @@ public class JournalFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ((AppActivity) requireActivity()).curr = this;
+    }
+
+    @Override
     public void onDestroyView() {
         mBinding = null;
         mJournalAdapter = null;

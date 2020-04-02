@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.NewAdapterItemBinding;
 import com.example.studentappmvvm.databinding.NewCardAdapterItemBinding;
@@ -27,6 +30,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewViewHolder>
 
     public List<? extends New> getNewsList(){
         return mNewsList;
+    }
+
+    private NewsFragment fragment;
+
+    public NewsAdapter(NewsFragment fragment) {
+        this.fragment = fragment;
     }
 
     public void setNews(final List<? extends New> newsList) {
@@ -76,6 +85,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewViewHolder>
     @Override
     public void onBindViewHolder(@NonNull NewViewHolder holder, int position) {
         holder.binding.setNewitem(mNewsList.get(position));
+        if (!mNewsList.get(position).hasImage()) {
+            String url = "http://192.168.1.129:3000/" + /*mNewsList.get(position).getFileHash()*/ "1012161c3d38f3569919a19addfb233b.png";
+            Glide.with(fragment).load(url).error(R.drawable.circle).into(holder.binding.imgView);
+        }
         holder.binding.cardView.setOnClickListener(view -> {
             if (holder.binding.expandableLayout.getVisibility() == View.GONE) {
                 TransitionManager.beginDelayedTransition(holder.binding.cardView, new AutoTransition());

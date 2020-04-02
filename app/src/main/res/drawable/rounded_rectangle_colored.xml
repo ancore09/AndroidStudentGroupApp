@@ -9,7 +9,7 @@ android:shape="rectangle" >
 
 <!-- The radius makes the corners rounded -->
 <corners
-    android:radius="20dp">
+    android:topLeftRadius="20dp" android:topRightRadius="20dp">
 </corners>
 </shape>
 

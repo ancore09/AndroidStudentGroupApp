@@ -57,7 +57,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.LessonVi
                     Lesson oldLesson = mLessonsList.get(oldItemPosition);
                     return newLesson.getId() == oldLesson.getId()
                             && TextUtils.equals(newLesson.getDate(), oldLesson.getDate())
-                            && TextUtils.equals(newLesson.getMark(), oldLesson.getMark())
+                            && newLesson.getMark() == oldLesson.getMark()
                             && TextUtils.equals(newLesson.getTheme(), oldLesson.getTheme())
                             && TextUtils.equals(newLesson.getHomework(), oldLesson.getHomework());
                 }

@@ -30,7 +30,7 @@ public class LessonFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String[] args = getArguments().getString("info").split("#");
+        String[] args = getArguments().getString("info").split("#&");
         LessonEntity les = new LessonEntity();
         les.setId(Integer.parseInt(args[0]));
         les.setHomework(args[1]);
@@ -44,7 +44,7 @@ public class LessonFragment extends Fragment {
     public static LessonFragment forLesson(Lesson lesson) {
         LessonFragment fr = new LessonFragment();
         Bundle args = new Bundle();
-        args.putString("info", lesson.getId() + "#" + lesson.getHomework() + "#" + lesson.getMark() +"#" + lesson.getDate() + "#" + lesson.getTheme() );
+        args.putString("info", lesson.getId() + "#&" + lesson.getHomework() + "#&" + lesson.getMark() +"#&" + lesson.getDate() + "#&" + lesson.getTheme() );
         fr.setArguments(args);
         return fr;
     }

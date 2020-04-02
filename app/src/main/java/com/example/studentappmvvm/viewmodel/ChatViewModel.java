@@ -13,11 +13,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateHandle;
 
 import com.example.studentappmvvm.DataRepository;
+import com.example.studentappmvvm.databinding.FragmentChatBinding;
 import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.model.UserEntity;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class ChatViewModel extends AndroidViewModel {
     private final SavedStateHandle mSavedStateHandler;
@@ -53,9 +55,14 @@ public class ChatViewModel extends AndroidViewModel {
         mRepository.sendMessage(messageEntity);
     }
 
-    public void uploadFile(String path) {
-        nextMessageFileHash = mRepository.uploadFile(path);
+    public void uploadFile(String path, Function<FileResponse, Integer> func) {
+        nextMessageFileHash = mRepository.uploadFile(path, func);
         nextMessageHasFile = true;
+    }
+
+    public void clearPhoto() {
+        nextMessageFileHash = null;
+        nextMessageHasFile = false;
     }
 
     public UserEntity getUser() {

@@ -2,7 +2,7 @@ package com.example.studentappmvvm.model;
 
 public class Mark {
     int ID;
-    byte mark;
+    String Mark;
 
     public int getId() {
         return ID;
@@ -12,11 +12,11 @@ public class Mark {
         this.ID = id;
     }
 
-    public byte getMark() {
-        return mark;
+    public String getMark() {
+        return Mark;
     }
 
-    public void setMark(byte mark) {
-        this.mark = mark;
+    public void setMark(String mark) {
+        this.Mark = mark;
     }
 }

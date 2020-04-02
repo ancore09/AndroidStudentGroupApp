@@ -54,7 +54,7 @@ public class AppActivity extends AppCompatActivity {
     ChatFragment chat = new ChatFragment();
     ProfileFragment profile = new ProfileFragment();
 
-    Fragment curr = news;
+    public Fragment curr = news;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -152,34 +152,36 @@ public class AppActivity extends AppCompatActivity {
         fragmentTransaction.addToBackStack("transition").replace(R.id.place_holder, nextFragment).commitAllowingStateLoss();
     } //transition with fade in/out animation between two fragments
 
-    public void performTransition(LessonFragment next, Fragment fr) {
-        if (isDestroyed()) {
-            return;
-        }
-
-        Fragment nextFragment = next;
-        Fragment previousFragment = fr;
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        Fade exitFade = new Fade();
-        exitFade.setDuration(FADE_DEFAULT_TIME);
-        previousFragment.setExitTransition(exitFade);
-
-        TransitionSet enterTransitionSet = new TransitionSet();
-        enterTransitionSet.addTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.move));
-        enterTransitionSet.setDuration(MOVE_DEFAULT_TIME);
-        enterTransitionSet.setStartDelay(FADE_DEFAULT_TIME);
-        nextFragment.setSharedElementEnterTransition(enterTransitionSet);
-
-        Fade enterFade = new Fade();
-        enterFade.setStartDelay(MOVE_DEFAULT_TIME + FADE_DEFAULT_TIME);
-        enterFade.setDuration(FADE_DEFAULT_TIME);
-        nextFragment.setEnterTransition(enterFade);
-
-        fragmentTransaction.addSharedElement(previousFragment.requireView().findViewById(R.id.containerL), previousFragment.getView().findViewById(R.id.containerL).getTransitionName());
-        fragmentTransaction.addToBackStack("transition").replace(R.id.place_holder, nextFragment).commitAllowingStateLoss();
-    } //same but with LessonFragment, curr variable not overridden
+//    public void performTransition(LessonFragment next, Fragment fr) {
+//        if (isDestroyed()) {
+//            return;
+//        }
+//
+//        curr = next;
+//
+//        Fragment nextFragment = next;
+//        Fragment previousFragment = fr;
+//
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//
+//        Fade exitFade = new Fade();
+//        exitFade.setDuration(FADE_DEFAULT_TIME);
+//        previousFragment.setExitTransition(exitFade);
+//
+//        TransitionSet enterTransitionSet = new TransitionSet();
+//        enterTransitionSet.addTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.move));
+//        enterTransitionSet.setDuration(MOVE_DEFAULT_TIME);
+//        enterTransitionSet.setStartDelay(FADE_DEFAULT_TIME);
+//        nextFragment.setSharedElementEnterTransition(enterTransitionSet);
+//
+//        Fade enterFade = new Fade();
+//        enterFade.setStartDelay(MOVE_DEFAULT_TIME + FADE_DEFAULT_TIME);
+//        enterFade.setDuration(FADE_DEFAULT_TIME);
+//        nextFragment.setEnterTransition(enterFade);
+//
+//        fragmentTransaction.addSharedElement(previousFragment.requireView().findViewById(R.id.containerL), previousFragment.getView().findViewById(R.id.containerL).getTransitionName());
+//        fragmentTransaction.addToBackStack("transition").replace(R.id.place_holder, nextFragment).commitAllowingStateLoss();
+//    } //same but with LessonFragment, curr variable not overridden
 
     public void changeFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.place_holder, fragment).commit();

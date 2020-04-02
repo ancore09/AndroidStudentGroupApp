@@ -51,7 +51,10 @@
             app:srlEnableOverScrollBounce="true"
             app:visibleGone="@{!isLoading}">
 
-            <com.scwang.smartrefresh.header.MaterialHeader
+<!--            <com.scwang.smartrefresh.header.MaterialHeader-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"/>-->
+            <com.scwang.smartrefresh.header.FunGameHitBlockHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

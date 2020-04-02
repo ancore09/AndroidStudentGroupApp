@@ -3,7 +3,9 @@ package com.example.studentappmvvm;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.studentappmvvm.model.EvaluationEntity;
 import com.example.studentappmvvm.model.FileResponse;
+import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberDataEntity;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -90,7 +93,7 @@ public class DataRepository {
 
     public void postLoad() {
         mObservableNews = loadNews(listMutableLiveData -> 0);
-        mObservableLessons = loadJournal();
+        mObservableLessons = loadJournal(new int[]{1, 2});
         mObservableMessages = loadMessages();
         mObservableMarks = loadMarks();
         mSocket.connect();
@@ -142,7 +145,7 @@ public class DataRepository {
         });
     } //trying to get user and its memberdata from server
 
-    public FileResponse uploadFile(String path) {
+    public FileResponse uploadFile(String path, Function<FileResponse, Integer> func) {
         File file = new File(path);
         FileResponse name = new FileResponse();
 
@@ -154,6 +157,7 @@ public class DataRepository {
             @Override
             public void onResponse(Call<FileResponse> call, Response<FileResponse> response) {
                name.setName(response.body().getName());
+               func.apply(response.body());
             }
 
             @Override
@@ -211,12 +215,64 @@ public class DataRepository {
         return data;
     } //loading chat messages from server
 
-    public MutableLiveData<List<LessonEntity>> loadJournal() {
+    public MutableLiveData<List<LessonEntity>> loadJournal(int[] group_id) {
         MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
-        ws.getLessons(1, mUser.getID()).enqueue(new Callback<List<LessonEntity>>() {
+        ws.getLessons(group_id, mUser.getID()).enqueue(new Callback<List<LessonEntity>>() {
             @Override
             public void onResponse(Call<List<LessonEntity>> call, Response<List<LessonEntity>> response) {
-                data.postValue(response.body());
+                data.setValue(response.body());
+
+                ws.getGroup(group_id).enqueue(new Callback<List<GroupEntity>>() {
+                    @Override
+                    public void onResponse(Call<List<GroupEntity>> call, Response<List<GroupEntity>> response) {
+                        data.getValue().forEach(lessonEntity -> {
+                            response.body().forEach(groupEntity -> {
+                                if (lessonEntity.getGroupID() == groupEntity.getID()) {
+                                    lessonEntity.setGroup(groupEntity.getName());
+                                }
+                            });
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<GroupEntity>> call, Throwable t) {
+
+                    }
+                });
+
+                ws.getEvaluation(mUser.getLogin()).enqueue(new Callback<List<EvaluationEntity>>() {
+                    @Override
+                    public void onResponse(Call<List<EvaluationEntity>> call, Response<List<EvaluationEntity>> responseEvaliation) {
+                        int[] ids = new int[responseEvaliation.body().size()];
+                        for (int i = 0; i < ids.length; i++) {
+                            ids[i] = responseEvaliation.body().get(i).getLessonID();
+                        }
+                        ws.getMarks(mUser.getLogin(), ids).enqueue(new Callback<List<Mark>>() {
+                            @Override
+                            public void onResponse(Call<List<Mark>> call, Response<List<Mark>> responseMark) {
+                                responseEvaliation.body().forEach(evaluationEntity -> {
+                                    data.getValue().forEach(lessonEntity -> {
+                                        responseMark.body().forEach(mark -> {
+                                            if (evaluationEntity.getLessonID() == lessonEntity.getId() && evaluationEntity.getMarkID() == mark.getId()) {
+                                                lessonEntity.setMark(mark.getMark());
+                                            }
+                                        });
+                                    });
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Mark>> call, Throwable t) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<EvaluationEntity>> call, Throwable t) {
+
+                    }
+                });
             }
 
             @Override
@@ -225,7 +281,7 @@ public class DataRepository {
             }
         });
         return data;
-    } //loading/updating journal(lessons) from server
+    } //loading/updating journal(lessons) and marks from server
 
     public MutableLiveData<List<NewEntity>> getNews() {
         return mObservableNews;

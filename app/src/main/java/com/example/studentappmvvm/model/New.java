@@ -10,4 +10,7 @@ public interface New {
     String getEpilogue();
 
     String getDateDMY();
+
+    String getFileHash();
+    boolean hasImage();
 }
