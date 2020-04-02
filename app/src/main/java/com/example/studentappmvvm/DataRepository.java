@@ -52,9 +52,7 @@ public class DataRepository {
     private MutableLiveData<List<NewEntity>> mObservableNews;
     private MutableLiveData<List<LessonEntity>> mObservableLessons;
     private MutableLiveData<List<MessageEntity>> mObservableMessages;
-    private LiveData<List<Mark>> mObservableMarks;
-    private MutableLiveData<List<GroupEntity>> mGroups = new MutableLiveData<>();
-
+    private MutableLiveData<List<GroupEntity>> mGroups;
     private UserEntity mUser;
 
     private DataRepository() {
@@ -90,16 +88,11 @@ public class DataRepository {
         return sInstance;
     } //there is only one instance of repository in the app
 
+
+
+
     public void firstLoad() {
         mUser = UserEntity.getInstance(); //instance of user required for login
-    }
-
-    public void postLoad() {
-        mObservableNews = loadNews(listMutableLiveData -> 0, getGroupIds());
-        mObservableLessons = loadJournal(getGroupIds());
-        mObservableMessages = loadMessages();
-        mObservableMarks = loadMarks();
-        mSocket.connect();
     }
 
     public void postLoadNews() {
@@ -115,7 +108,8 @@ public class DataRepository {
         mSocket.connect();
     }
 
-    int[] getGroupIds() {
+
+    private int[] getGroupIds() {
         int[] groupids = new int[mGroups.getValue().size()];
         for (int i = 0; i < groupids.length; i++) {
             groupids[i] = mGroups.getValue().get(i).getID();
@@ -123,20 +117,8 @@ public class DataRepository {
         return groupids;
     }
 
-    public void sendMessage(MessageEntity messageEntity) {
-        Gson gson = new Gson();
-        String json = gson.toJson(messageEntity);
-        mSocket.emit("message", json);
-    }
-
-    public MutableLiveData<List<LessonEntity>> searchLessons(String query) {
-        List<LessonEntity> filteredList = mObservableLessons.getValue().stream().filter(lessonEntity -> lessonEntity.getDate().contains(query)).collect(Collectors.toList());
-        MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
-        data.setValue(filteredList);
-        return data;
-    } //filtering lessons list with query
-
     public void authUser(String login, String hash, Function<UserEntity, Integer> func) {
+        mGroups = new MutableLiveData<>();
         ws.authUser(login, hash).enqueue(new Callback<UserEntity>() {
             @Override
             public void onResponse(Call<UserEntity> call, Response<UserEntity> response) {
@@ -193,36 +175,8 @@ public class DataRepository {
                 func.apply(null);
             }
         });
-    } //trying to get user and its memberdata from server
+    } //trying to get user and its memberdata and groups from server
 
-    public FileResponse uploadFile(String path, Function<FileResponse, Integer> func) {
-        File file = new File(path);
-        FileResponse name = new FileResponse();
-
-        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);
-
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), fbody);
-
-        ws.uploadFile(body).enqueue(new Callback<FileResponse>() {
-            @Override
-            public void onResponse(Call<FileResponse> call, Response<FileResponse> response) {
-               name.setName(response.body().getName());
-               func.apply(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<FileResponse> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-        return name;
-    } //single file/photo uploading
-
-    public LiveData<List<Mark>> loadMarks() {
-        MutableLiveData<List<Mark>> data = new MutableLiveData<>();
-
-        return data;
-    }
 
     public void updateNews() {
         loadNews(listMutableLiveData -> {
@@ -278,6 +232,36 @@ public class DataRepository {
         return data;
     } //loading/updating news from server
 
+
+    public void sendMessage(MessageEntity messageEntity) {
+        Gson gson = new Gson();
+        String json = gson.toJson(messageEntity);
+        mSocket.emit("message", json);
+    }
+
+    public FileResponse uploadFile(String path, Function<FileResponse, Integer> func) {
+        File file = new File(path);
+        FileResponse name = new FileResponse();
+
+        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);
+
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), fbody);
+
+        ws.uploadFile(body).enqueue(new Callback<FileResponse>() {
+            @Override
+            public void onResponse(Call<FileResponse> call, Response<FileResponse> response) {
+                name.setName(response.body().getName());
+                func.apply(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FileResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+        return name;
+    } //single file/photo uploading
+
     public MutableLiveData<List<MessageEntity>> loadMessages() {
         MutableLiveData<List<MessageEntity>> data = new MutableLiveData<>();
         List<MessageEntity> failData = new ArrayList<>();
@@ -294,6 +278,14 @@ public class DataRepository {
         });
         return data;
     } //loading chat messages from server
+
+
+    public MutableLiveData<List<LessonEntity>> searchLessons(String query) {
+        List<LessonEntity> filteredList = mObservableLessons.getValue().stream().filter(lessonEntity -> lessonEntity.getDate().contains(query)).collect(Collectors.toList());
+        MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
+        data.setValue(filteredList);
+        return data;
+    } //filtering lessons list with query
 
     public MutableLiveData<List<LessonEntity>> loadJournal(int[] group_id) {
         MutableLiveData<List<LessonEntity>> data = new MutableLiveData<>();
@@ -379,9 +371,6 @@ public class DataRepository {
     }
     public MutableLiveData<List<MessageEntity>> getMessages() {
         return mObservableMessages;
-    }
-    public LiveData<List<Mark>> getMarks() {
-        return mObservableMarks;
     }
     public UserEntity getUser() {
         return mUser;
