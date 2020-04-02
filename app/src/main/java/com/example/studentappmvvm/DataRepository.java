@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.studentappmvvm.model.EvaluationEntity;
 import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.GroupEntity;
+import com.example.studentappmvvm.model.GroupingEntity;
+import com.example.studentappmvvm.model.InformingEntity;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberDataEntity;
@@ -51,6 +53,7 @@ public class DataRepository {
     private MutableLiveData<List<LessonEntity>> mObservableLessons;
     private MutableLiveData<List<MessageEntity>> mObservableMessages;
     private LiveData<List<Mark>> mObservableMarks;
+    private MutableLiveData<List<GroupEntity>> mGroups = new MutableLiveData<>();
 
     private UserEntity mUser;
 
@@ -92,11 +95,32 @@ public class DataRepository {
     }
 
     public void postLoad() {
-        mObservableNews = loadNews(listMutableLiveData -> 0);
-        mObservableLessons = loadJournal(new int[]{1, 2});
+        mObservableNews = loadNews(listMutableLiveData -> 0, getGroupIds());
+        mObservableLessons = loadJournal(getGroupIds());
         mObservableMessages = loadMessages();
         mObservableMarks = loadMarks();
         mSocket.connect();
+    }
+
+    public void postLoadNews() {
+        mObservableNews = loadNews(listMutableLiveData -> 0, getGroupIds());
+    }
+
+    public void postLoadJournal() {
+        mObservableLessons = loadJournal(getGroupIds());
+    }
+
+    public void postLoadMessages() {
+        mObservableMessages = loadMessages();
+        mSocket.connect();
+    }
+
+    int[] getGroupIds() {
+        int[] groupids = new int[mGroups.getValue().size()];
+        for (int i = 0; i < groupids.length; i++) {
+            groupids[i] = mGroups.getValue().get(i).getID();
+        }
+        return groupids;
     }
 
     public void sendMessage(MessageEntity messageEntity) {
@@ -122,7 +146,6 @@ public class DataRepository {
                 mUser.setNickName(response.body().getNickName());
                 mUser.setLogin(response.body().getLogin());
                 mUser.setMemberdata_ID(response.body().getMemberdata_ID());
-                func.apply(mUser);
 
                 ws.getMemberData(mUser.getMemberdata_ID()).enqueue(new Callback<MemberDataEntity>() {
                     @Override
@@ -133,6 +156,33 @@ public class DataRepository {
 
                     @Override
                     public void onFailure(Call<MemberDataEntity> call, Throwable t) {
+
+                    }
+                });
+
+                ws.getGrouping(mUser.getID()).enqueue(new Callback<List<GroupingEntity>>() {
+                    @Override
+                    public void onResponse(Call<List<GroupingEntity>> call, Response<List<GroupingEntity>> response) {
+                        int[] ids = new int[response.body().size()];
+                        for (int i = 0; i < ids.length; i++) {
+                            ids[i] = response.body().get(i).getGroupID();
+                        }
+                        ws.getGroup(ids).enqueue(new Callback<List<GroupEntity>>() {
+                            @Override
+                            public void onResponse(Call<List<GroupEntity>> call, Response<List<GroupEntity>> response) {
+                                mGroups.postValue(response.body());
+                                func.apply(mUser);
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<GroupEntity>> call, Throwable t) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<GroupingEntity>> call, Throwable t) {
 
                     }
                 });
@@ -178,16 +228,46 @@ public class DataRepository {
         loadNews(listMutableLiveData -> {
             mObservableNews.setValue(listMutableLiveData.getValue());
             return 1;
-        });
+        }, getGroupIds());
     } //updating news using callback
 
-    public MutableLiveData<List<NewEntity>> loadNews(Function<MutableLiveData<List<NewEntity>>, Integer> func) {
+    public MutableLiveData<List<NewEntity>> loadNews(Function<MutableLiveData<List<NewEntity>>, Integer> func, int[] groupIds) {
         MutableLiveData<List<NewEntity>> data = new MutableLiveData<>();
-        ws.getNews(1).enqueue(new Callback<List<NewEntity>>() {
+        ws.getNews(groupIds).enqueue(new Callback<List<NewEntity>>() {
             @Override
             public void onResponse(Call<List<NewEntity>> call, Response<List<NewEntity>> response) {
                 data.setValue(response.body());
-                func.apply(data);
+
+                ws.getInforming(groupIds).enqueue(new Callback<List<InformingEntity>>() {
+                    @Override
+                    public void onResponse(Call<List<InformingEntity>> call, Response<List<InformingEntity>> responseInforming) {
+//                        responseInforming.body().forEach(informingEntity -> {
+//                            data.getValue().forEach(newEntity -> {
+//                                mGroups.getValue().forEach(groupEntity -> {
+//                                    if (informingEntity.getNewID() == newEntity.getId() && informingEntity.getGroupID() == groupEntity.getID()) {
+//                                        newEntity.setGroupName(groupEntity.getName());
+//                                    }
+//                                });
+//                            });
+//                        });
+                        data.getValue().forEach(newEntity -> {
+                            mGroups.getValue().forEach(groupEntity -> {
+                                responseInforming.body().forEach(informingEntity -> {
+                                    if (informingEntity.getNewID() == newEntity.getId() && informingEntity.getGroupID() == groupEntity.getID()) {
+                                        newEntity.setGroupName(groupEntity.getName());
+                                    }
+                                });
+                            });
+                        });
+
+                        func.apply(data);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<InformingEntity>> call, Throwable t) {
+
+                    }
+                });
             }
 
             @Override
@@ -222,22 +302,30 @@ public class DataRepository {
             public void onResponse(Call<List<LessonEntity>> call, Response<List<LessonEntity>> response) {
                 data.setValue(response.body());
 
-                ws.getGroup(group_id).enqueue(new Callback<List<GroupEntity>>() {
-                    @Override
-                    public void onResponse(Call<List<GroupEntity>> call, Response<List<GroupEntity>> response) {
-                        data.getValue().forEach(lessonEntity -> {
-                            response.body().forEach(groupEntity -> {
-                                if (lessonEntity.getGroupID() == groupEntity.getID()) {
-                                    lessonEntity.setGroup(groupEntity.getName());
-                                }
-                            });
-                        });
-                    }
+//                ws.getGroup(group_id).enqueue(new Callback<List<GroupEntity>>() {
+//                    @Override
+//                    public void onResponse(Call<List<GroupEntity>> call, Response<List<GroupEntity>> response) {
+//                        data.getValue().forEach(lessonEntity -> {
+//                            response.body().forEach(groupEntity -> {
+//                                if (lessonEntity.getGroupID() == groupEntity.getID()) {
+//                                    lessonEntity.setGroup(groupEntity.getName());
+//                                }
+//                            });
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<List<GroupEntity>> call, Throwable t) {
+//
+//                    }
+//                });
 
-                    @Override
-                    public void onFailure(Call<List<GroupEntity>> call, Throwable t) {
-
-                    }
+                data.getValue().forEach(lessonEntity -> {
+                    mGroups.getValue().forEach(groupEntity -> {
+                        if (lessonEntity.getGroupID() == groupEntity.getID()) {
+                            lessonEntity.setGroup(groupEntity.getName());
+                        }
+                    });
                 });
 
                 ws.getEvaluation(mUser.getLogin()).enqueue(new Callback<List<EvaluationEntity>>() {

@@ -4,6 +4,8 @@ import com.example.studentappmvvm.model.Evaluation;
 import com.example.studentappmvvm.model.EvaluationEntity;
 import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.GroupEntity;
+import com.example.studentappmvvm.model.GroupingEntity;
+import com.example.studentappmvvm.model.InformingEntity;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberData;
@@ -42,14 +44,20 @@ public interface Webservice {
     @GET("/getEvaluation")
     Call<List<EvaluationEntity>> getEvaluation(@Query("login") String login);
 
+    @GET("/getInforming")
+    Call<List<InformingEntity>> getInforming(@Query("groupid") int[] group_ids);
+
     @GET("/getNews")
-    Call<List<NewEntity>> getNews(@Query("groupid") int group_id);
+    Call<List<NewEntity>> getNews(@Query("groupid") int[] group_id);
 
     @GET("/getLessons")
-    Call<List<LessonEntity>> getLessons(@Query("groupid") int[] group_id, @Query("loginid") int user_id);
+    Call<List<LessonEntity>> getLessons(@Query("groupid") int[] group_ids, @Query("loginid") int user_id);
 
     @GET("/getGroup")
-    Call<List<GroupEntity>> getGroup(@Query("id") int[] id);
+    Call<List<GroupEntity>> getGroup(@Query("id") int[] group_ids);
+
+    @GET("/getGrouping")
+    Call<List<GroupingEntity>> getGrouping(@Query("userid") int user_id);
 
     @Multipart
     @POST("/uploadFile")

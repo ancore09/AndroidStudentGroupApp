@@ -52,6 +52,8 @@ public class NewsFragment extends Fragment {
         }
     }; //swipe to left on item in recyclerview callback
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -26,6 +26,7 @@ public class JournalViewModel extends AndroidViewModel {
         super(application);
         mSavedStateHandler = savedStateHandle;
         mRepository = DataRepository.getInstance();
+        mRepository.postLoadJournal();
 
         mLessons = Transformations.switchMap(
                 savedStateHandle.getLiveData("QUERY", null),

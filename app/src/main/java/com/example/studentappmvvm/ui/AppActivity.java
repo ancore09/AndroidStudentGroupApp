@@ -42,7 +42,7 @@ public class AppActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     private static final short MOVE_DEFAULT_TIME = 50;
-    private static final short FADE_DEFAULT_TIME = 50;
+    private static final short FADE_DEFAULT_TIME = 100;
 
 
     private TextView mTextMessage;
@@ -116,7 +116,7 @@ public class AppActivity extends AppCompatActivity {
             }); //when keyboard is open, navbar wont interfere
 
             getSupportFragmentManager().beginTransaction().add(R.id.place_holder, news, NewsFragment.TAG).commit();
-            mRepository.postLoad(); //loading of all data from server
+            //mRepository.postLoad(); //loading of all data from server
         }
     }
 

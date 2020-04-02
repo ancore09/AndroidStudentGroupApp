@@ -34,6 +34,7 @@ public class ChatViewModel extends AndroidViewModel {
         super(application);
         mSavedStateHandler = savedStateHandle;
         mRepository = DataRepository.getInstance();
+        mRepository.postLoadMessages();
         mUser = UserEntity.getInstance();
 
         mMessagesList = new MediatorLiveData<>();

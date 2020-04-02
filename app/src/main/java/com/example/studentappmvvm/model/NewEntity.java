@@ -6,10 +6,20 @@ public class NewEntity implements New{
     String body;
     String epilogue;
     String filehash;
+    String group;
     int ID;
 
     public int getId() {
         return ID;
+    }
+
+    @Override
+    public String getGroupName() {
+        return group;
+    }
+
+    public void setGroupName(String groupName) {
+        this.group = groupName;
     }
 
     public String getDateDMY() {
