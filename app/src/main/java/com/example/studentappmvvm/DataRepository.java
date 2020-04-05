@@ -94,10 +94,11 @@ public class DataRepository {
         mObservableLessons = loadJournal(getGroupIds());
     }
 
-    public void postLoadMessages() {
+    public void postLoadMessages(String room) {
         mObservableMessages = loadMessages();
+        String roomNirm = room.replace(" ", "");
         try {
-            mSocket = IO.socket("http://192.168.1.129:3000?room=" + mGroups.getValue().get(0).getID());
+            mSocket = IO.socket("http://192.168.1.129:3000?room=" + roomNirm);
         } catch (URISyntaxException e) {}
 
         mSocket.on("message", args -> {
@@ -115,11 +116,11 @@ public class DataRepository {
         mSocket.connect();
     }
 
-    public void changeRoom(int prev_id, int new_id) {
+    public void changeRoom(String prev_id, String new_id) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("prev_id", prev_id);
-            jsonObject.put("new_id", new_id);
+            jsonObject.put("prev_id", prev_id.replace(" ", ""));
+            jsonObject.put("new_id", new_id.replace(" ", ""));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -279,12 +280,12 @@ public class DataRepository {
     } //loading/updating news from server
 
 
-    public void sendMessage(MessageEntity messageEntity, int room) throws JSONException {
+    public void sendMessage(MessageEntity messageEntity, String room) throws JSONException {
         Gson gson = new Gson();
         String json = gson.toJson(messageEntity);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("mes", json);
-        jsonObject.put("room", room);
+        jsonObject.put("room", room.replace(" ", ""));
         mSocket.emit("message", jsonObject);
     }
 

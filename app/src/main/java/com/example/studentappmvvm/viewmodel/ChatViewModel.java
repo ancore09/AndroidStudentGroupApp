@@ -29,8 +29,8 @@ public class ChatViewModel extends AndroidViewModel {
     private final DataRepository mRepository;
     private final MediatorLiveData<List<MessageEntity>> mMessagesList;
     private final UserEntity mUser;
-    private int room = 1;
-    private int prevRoom = 1;
+    private String room;
+    private String prevRoom;
 
     private boolean nextMessageHasFile = false;
     private FileResponse nextMessageFileHash;
@@ -39,8 +39,13 @@ public class ChatViewModel extends AndroidViewModel {
         super(application);
         mSavedStateHandler = savedStateHandle;
         mRepository = DataRepository.getInstance();
-        mRepository.postLoadMessages();
+
+        room = getGroups().getValue().get(0).getName();
+        prevRoom = getGroups().getValue().get(0).getName();
+
+        mRepository.postLoadMessages(room);
         mUser = UserEntity.getInstance();
+
 
         mMessagesList = new MediatorLiveData<>();
 
@@ -49,7 +54,7 @@ public class ChatViewModel extends AndroidViewModel {
         }); //observing livedata in repository
     }
 
-    public void changeGroupChat(int i) {
+    public void changeGroupChat(String i) {
         prevRoom = room;
         room = i;
         mRepository.changeRoom(prevRoom, room);

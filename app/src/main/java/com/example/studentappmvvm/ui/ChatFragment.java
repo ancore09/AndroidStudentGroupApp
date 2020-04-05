@@ -32,9 +32,8 @@ import com.example.studentappmvvm.model.Group;
 import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.viewmodel.ChatViewModel;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
-import org.angmarch.views.NiceSpinner;
-import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.json.JSONException;
 
 import java.io.FileDescriptor;
@@ -76,17 +75,12 @@ public class ChatFragment extends Fragment {
         mBinding.sendbtn.setOnClickListener(v -> sendMessage(mBinding.editText.getText().toString(), viewModel));
 
         List<GroupEntity> groups = viewModel.getGroups().getValue();
-        ArrayList<Integer> groupIds = new ArrayList<>();
+        ArrayList<String> groupIds = new ArrayList<>();
 
-        groups.forEach(groupEntity -> groupIds.add(groupEntity.getID()));
+        groups.forEach(groupEntity -> groupIds.add(groupEntity.getName()));
 
-        mBinding.niceSpinner.attachDataSource(groupIds);
-        mBinding.niceSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
-            @Override
-            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
-                viewModel.changeGroupChat((Integer) parent.getItemAtPosition(position));
-            }
-        });
+        mBinding.spinner.setItems(groupIds);
+        mBinding.spinner.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view1, position, id, item) -> viewModel.changeGroupChat(item));
 
         mBinding.attachbtn.setOnClickListener(v -> {
             attachPhoto();
