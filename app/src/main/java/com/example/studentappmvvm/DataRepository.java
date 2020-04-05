@@ -21,6 +21,9 @@ import com.google.gson.Gson;
 import com.squareup.okhttp.ResponseBody;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -42,11 +45,11 @@ public class DataRepository {
 
     private Webservice ws;
     private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("http://192.168.1.129:3000?room=c");
-        } catch (URISyntaxException e) {}
-    }
+//    {
+//        try {
+//            mSocket = IO.socket("http://192.168.1.129:3000?room=");
+//        } catch (URISyntaxException e) {}
+//    }
 
     private static DataRepository sInstance;
     private MutableLiveData<List<NewEntity>> mObservableNews;
@@ -63,18 +66,6 @@ public class DataRepository {
 
         ws = retrofit.create(Webservice.class);
         firstLoad();
-
-        mSocket.on("message", args -> {
-            Gson gson = new Gson();
-            MessageEntity msg;
-            try {
-                msg = gson.fromJson(args[0].toString(), MessageEntity.class);
-                mObservableMessages.getValue().add(msg);
-                mObservableMessages.postValue(mObservableMessages.getValue());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }); //listener for  "message" event
     }
 
     public static DataRepository getInstance() {
@@ -105,7 +96,34 @@ public class DataRepository {
 
     public void postLoadMessages() {
         mObservableMessages = loadMessages();
+        try {
+            mSocket = IO.socket("http://192.168.1.129:3000?room=" + mGroups.getValue().get(0).getID());
+        } catch (URISyntaxException e) {}
+
+        mSocket.on("message", args -> {
+            Gson gson = new Gson();
+            MessageEntity msg;
+            try {
+                msg = gson.fromJson(args[0].toString(), MessageEntity.class);
+                mObservableMessages.getValue().add(msg);
+                mObservableMessages.postValue(mObservableMessages.getValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }); //listener for  "message" event
+
         mSocket.connect();
+    }
+
+    public void changeRoom(int prev_id, int new_id) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("prev_id", prev_id);
+            jsonObject.put("new_id", new_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("changeRoom", jsonObject);
     }
 
 
@@ -261,10 +279,13 @@ public class DataRepository {
     } //loading/updating news from server
 
 
-    public void sendMessage(MessageEntity messageEntity) {
+    public void sendMessage(MessageEntity messageEntity, int room) throws JSONException {
         Gson gson = new Gson();
         String json = gson.toJson(messageEntity);
-        mSocket.emit("message", json);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("mes", json);
+        jsonObject.put("room", room);
+        mSocket.emit("message", jsonObject);
     }
 
     public FileResponse uploadFile(String path, Function<FileResponse, Integer> func) {
@@ -402,5 +423,8 @@ public class DataRepository {
     }
     public UserEntity getUser() {
         return mUser;
+    }
+    public MutableLiveData<List<GroupEntity>> getGroups() {
+        return mGroups;
     }
 }

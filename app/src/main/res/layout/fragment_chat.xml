@@ -16,15 +16,13 @@
     android:focusableInTouchMode="true"
     android:transitionName="transition">
 
-<!--    <ListView-->
-<!--        android:id="@+id/messages_view"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:background="#E4E4E4"-->
-<!--        android:divider="#fff"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/linearLayout5"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/nice_spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messagesList"
@@ -33,11 +31,11 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp"
         android:padding="4dip"
+        app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/relLayout"
         app:layout_constraintStart_toStartOf="@+id/linearLayout5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layoutManager="LinearLayoutManager"
-        app:visibleGone="@{!isLoading}"/>
+        app:layout_constraintTop_toBottomOf="@id/nice_spinner"
+        app:visibleGone="@{!isLoading}" />
 
     <RelativeLayout
         android:id="@+id/relLayout"

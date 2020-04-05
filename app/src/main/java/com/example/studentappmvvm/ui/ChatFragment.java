@@ -28,11 +28,18 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.FragmentChatBinding;
 import com.example.studentappmvvm.model.FileResponse;
+import com.example.studentappmvvm.model.Group;
+import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.viewmodel.ChatViewModel;
 
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
+import org.json.JSONException;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -57,6 +64,7 @@ public class ChatFragment extends Fragment {
         mBinding.setIsLoading(true);
         mBinding.imgView.setVisibility(View.GONE);
         mBinding.relLayout.setVisibility(View.GONE);
+
         return mBinding.getRoot();
     }
 
@@ -66,6 +74,19 @@ public class ChatFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(ChatViewModel.class);
         mBinding.sendbtn.setOnClickListener(v -> sendMessage(mBinding.editText.getText().toString(), viewModel));
+
+        List<GroupEntity> groups = viewModel.getGroups().getValue();
+        ArrayList<Integer> groupIds = new ArrayList<>();
+
+        groups.forEach(groupEntity -> groupIds.add(groupEntity.getID()));
+
+        mBinding.niceSpinner.attachDataSource(groupIds);
+        mBinding.niceSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
+            @Override
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+                viewModel.changeGroupChat((Integer) parent.getItemAtPosition(position));
+            }
+        });
 
         mBinding.attachbtn.setOnClickListener(v -> {
             attachPhoto();
@@ -137,7 +158,11 @@ public class ChatFragment extends Fragment {
                 btu = true;
                 text = text.replace("#", ""); //for testing purposes, messages starting with # act like a sent one, without - like a received
             }
-            viewModel.sendMessage(new MessageEntity(k, text, viewModel.getUser().getMemberData(), btu)); //sending new message
+            try {
+                viewModel.sendMessage(new MessageEntity(k, text, viewModel.getUser().getMemberData(), btu)); //sending new message
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             k++;
             mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
             TransitionManager.beginDelayedTransition(mBinding.relLayout, new AutoTransition());

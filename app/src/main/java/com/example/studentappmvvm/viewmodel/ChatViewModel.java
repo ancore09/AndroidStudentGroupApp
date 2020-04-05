@@ -15,8 +15,11 @@ import androidx.lifecycle.SavedStateHandle;
 import com.example.studentappmvvm.DataRepository;
 import com.example.studentappmvvm.databinding.FragmentChatBinding;
 import com.example.studentappmvvm.model.FileResponse;
+import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.model.UserEntity;
+
+import org.json.JSONException;
 
 import java.util.List;
 import java.util.function.Function;
@@ -26,6 +29,8 @@ public class ChatViewModel extends AndroidViewModel {
     private final DataRepository mRepository;
     private final MediatorLiveData<List<MessageEntity>> mMessagesList;
     private final UserEntity mUser;
+    private int room = 1;
+    private int prevRoom = 1;
 
     private boolean nextMessageHasFile = false;
     private FileResponse nextMessageFileHash;
@@ -44,16 +49,22 @@ public class ChatViewModel extends AndroidViewModel {
         }); //observing livedata in repository
     }
 
+    public void changeGroupChat(int i) {
+        prevRoom = room;
+        room = i;
+        mRepository.changeRoom(prevRoom, room);
+    }
+
     public MediatorLiveData<List<MessageEntity>> getMessages() {
         return mMessagesList;
     }
 
-    public void sendMessage(MessageEntity messageEntity) {
+    public void sendMessage(MessageEntity messageEntity) throws JSONException {
         if (nextMessageHasFile) {
             messageEntity.setFileHash(nextMessageFileHash.getName());
             nextMessageHasFile = false;
         }
-        mRepository.sendMessage(messageEntity);
+        mRepository.sendMessage(messageEntity, room);
     }
 
     public void uploadFile(String path, Function<FileResponse, Integer> func) {
@@ -68,5 +79,9 @@ public class ChatViewModel extends AndroidViewModel {
 
     public UserEntity getUser() {
         return mUser;
+    }
+
+    public LiveData<List<GroupEntity>> getGroups() {
+        return mRepository.getGroups();
     }
 }
