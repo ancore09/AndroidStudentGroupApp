@@ -28,3 +28,7 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext.rxjava_version = "2.1.6"
+ext.rxandroid_version="2.0.1"
+ext.tableview_version="0.8.8"

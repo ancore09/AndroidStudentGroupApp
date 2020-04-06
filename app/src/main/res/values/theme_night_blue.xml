@@ -15,5 +15,8 @@
         <item name="colorOnSurface">@color/white_50</item>
 
         <item name="logo">@drawable/logo_light</item>
+
+        <item name="android:itemTextAppearance">@style/itemTextStyle.MyTheme</item>
     </style>
+
 </resources>

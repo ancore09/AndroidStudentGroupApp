@@ -28,4 +28,8 @@
         <item name="itemTextAppearance">?attr/textAppearanceBody2</item>
     </style>
 
+    <style name="itemTextStyle.MyTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@drawable/color_item_popup</item>
+        <item name="android:textSize">11sp</item>
+    </style>
 </resources>

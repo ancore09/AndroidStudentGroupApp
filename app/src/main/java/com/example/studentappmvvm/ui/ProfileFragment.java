@@ -45,6 +45,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
             ((AppActivity) requireActivity()).navView.setVisibility(View.VISIBLE);
+            ((AppActivity) requireActivity()).curr = this;
         }
     }
 
@@ -64,6 +65,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.appearencebtn:
+                ((AppActivity) requireActivity()).performTransition(new TableFragment(), this);
                 break;
             default:
                 break;

@@ -8,4 +8,10 @@
     <string name="title_chat">Chat</string>
     <string name="title_journal">Journal</string>
     <string name="title_profile">Profile</string>
+
+    <string name="sort_ascending">Sort Ascending</string>
+    <string name="sort_descending">Sort Descending</string>
+    <string name="clear_sorting">Clear</string>
+    <string name="row_show">Show 5. Row</string>
+    <string name="row_hide">Hide 5. Row</string>
 </resources>
