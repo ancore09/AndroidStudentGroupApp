@@ -43,9 +43,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            ((AppActivity) requireActivity()).navView.setVisibility(View.VISIBLE);
-            ((AppActivity) requireActivity()).curr = this;
+        if (requireActivity() instanceof AppActivity) {
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                ((AppActivity) requireActivity()).navView.setVisibility(View.VISIBLE);
+                ((AppActivity) requireActivity()).curr = this;
+            }
+        } else {
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                ((TeacherAppActivity) requireActivity()).navView.setVisibility(View.VISIBLE);
+                ((TeacherAppActivity) requireActivity()).curr = this;
+            }
         }
     }
 

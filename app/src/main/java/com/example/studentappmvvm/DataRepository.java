@@ -1,6 +1,5 @@
 package com.example.studentappmvvm;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.studentappmvvm.model.EvaluationEntity;
@@ -14,11 +13,9 @@ import com.example.studentappmvvm.model.MemberDataEntity;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.model.NewEntity;
 import com.example.studentappmvvm.model.UserEntity;
-import com.example.studentappmvvm.ui.ChatFragment;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
-import com.squareup.okhttp.ResponseBody;
 
 
 import org.json.JSONException;
@@ -28,7 +25,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -278,6 +275,28 @@ public class DataRepository {
         });
         return data;
     } //loading/updating news from server
+
+    public NewEntity postNew(String groupName, String date, String title, String body, String epil, String filehash, Function<NewEntity, Integer> func) {
+        NewEntity postItem = new NewEntity(date, title, body, epil, filehash, groupName);
+        int id = 0;
+        for (int i = 0; i < mGroups.getValue().size(); i++) {
+            if (mGroups.getValue().get(i).getName().equals(groupName)) {
+                id = mGroups.getValue().get(i).getID();
+            }
+        }
+        ws.postNew(id, date, title, body, epil, filehash).enqueue(new Callback<NewEntity>() {
+            @Override
+            public void onResponse(Call<NewEntity> call, Response<NewEntity> response) {
+                func.apply(postItem);
+            }
+
+            @Override
+            public void onFailure(Call<NewEntity> call, Throwable t) {
+                func.apply(null);
+            }
+        });
+        return postItem;
+    }
 
 
     public void sendMessage(MessageEntity messageEntity, String room) throws JSONException {

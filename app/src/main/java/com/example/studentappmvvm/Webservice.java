@@ -21,6 +21,9 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -62,4 +65,8 @@ public interface Webservice {
     @Multipart
     @POST("/uploadFile")
     Call<FileResponse> uploadFile(@Part MultipartBody.Part file);
+
+    @FormUrlEncoded
+    @POST("/postNew")
+    Call<NewEntity> postNew(@Query("groupid") int groupId, @Field("datedmy") String date, @Field("title") String title, @Field("body") String body, @Field("epilogue") String epil, @Field("filehash") String filehash);
 }

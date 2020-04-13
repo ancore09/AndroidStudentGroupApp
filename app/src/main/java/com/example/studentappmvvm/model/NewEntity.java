@@ -9,6 +9,15 @@ public class NewEntity implements New{
     String group;
     int ID;
 
+    public NewEntity(String datedmy, String title, String body, String epilogue, String filehash, String groupName) {
+        this.datedmy = datedmy;
+        this.title = title;
+        this.body = body;
+        this.epilogue = epilogue;
+        this.filehash = filehash;
+        this.group = groupName;
+    }
+
     public int getId() {
         return ID;
     }

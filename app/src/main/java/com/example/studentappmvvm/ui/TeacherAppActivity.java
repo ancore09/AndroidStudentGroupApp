@@ -102,7 +102,9 @@ public class TeacherAppActivity extends AppCompatActivity {
 
             KeyboardVisibilityEvent.setEventListener(this, isOpen -> {
                 if (isOpen) {
-                    navView.setVisibility(View.GONE);
+                    if (curr instanceof ChatFragment) {
+                        navView.setVisibility(View.GONE);
+                    }
                 } else {
                     if (curr instanceof ChatFragment) {
                         navView.setVisibility(View.VISIBLE);
