@@ -125,9 +125,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        Intent intent = new Intent(this, AppActivity.class);
-        startActivity(intent);
+        if (mRepository.getUser().isStudent()) {
+            _loginButton.setEnabled(true);
+            Intent intent = new Intent(this, AppActivity.class);
+            startActivity(intent);
+        } else {
+            _loginButton.setEnabled(true);
+            Intent intent = new Intent(this, TeacherAppActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void onLoginFailed() {

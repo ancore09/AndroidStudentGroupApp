@@ -23,6 +23,7 @@
         <activity android:name=".ui.AppActivity" android:theme="@style/Theme.NightBlue"/>
         <activity android:name=".ui.LoginActivity" android:theme="@style/Theme.NightBlue"/>
         <activity android:name=".ui.SignupActivity" android:theme="@style/Theme.NightBlue"/>
+        <activity android:name=".ui.TeacherAppActivity" android:theme="@style/Theme.NightBlue" />
     </application>
 
 </manifest>

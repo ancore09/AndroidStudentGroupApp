@@ -17,6 +17,7 @@
         <item name="logo">@drawable/logo_light</item>
 
         <item name="android:itemTextAppearance">@style/itemTextStyle.MyTheme</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
     </style>
 
 </resources>

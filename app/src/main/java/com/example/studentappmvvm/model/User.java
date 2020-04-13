@@ -4,6 +4,7 @@ import java.util.List;
 
 public interface User {
     int getID();
+    boolean isStudent();
     String getLogin();
     String getFirstName();
     String getLastName();

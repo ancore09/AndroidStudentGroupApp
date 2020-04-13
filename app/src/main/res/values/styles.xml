@@ -32,4 +32,15 @@
         <item name="android:textColor">@drawable/color_item_popup</item>
         <item name="android:textSize">11sp</item>
     </style>
+
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/blue_200</item>
+        <item name="colorSecondary">@color/blue_800</item>
+        <item name="colorSurface">@color/blue_800</item>
+        <item name="colorOnSurface">@color/white_50</item>
+        <item name="android:windowBackground">@color/blue_900</item>
+        <item name="android:layout_margin">4dp</item>
+<!--        <item name="android:windowBackground">@color/orange_transparent</item>-->
+<!--        <item name="android:windowIsFloating">false</item>-->
+    </style>
 </resources>

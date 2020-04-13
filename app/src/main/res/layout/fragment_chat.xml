@@ -30,6 +30,7 @@
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="8dp"
         app:ms_background_color="@color/blue_800"
         app:ms_text_color="@color/white_50"
         app:layout_constraintTop_toTopOf="parent"

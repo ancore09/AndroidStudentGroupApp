@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
@@ -32,9 +33,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewViewHolder>
         return mNewsList;
     }
 
-    private NewsFragment fragment;
+    private Fragment fragment;
 
-    public NewsAdapter(NewsFragment fragment) {
+    public NewsAdapter(Fragment fragment) {
         this.fragment = fragment;
     }
 

@@ -66,7 +66,7 @@ public class TableFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppActivity) requireActivity()).curr = this;
+        ((TeacherAppActivity) requireActivity()).curr = this;
     }
 
     private void initializeTableView(TableView tableView){

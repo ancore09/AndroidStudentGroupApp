@@ -13,6 +13,7 @@ public class UserEntity implements User {
     int memberdata_ID;
     MemberDataEntity data;
     List<Mark> marks;
+    boolean isStudent = false;
 
     public static UserEntity sInstance;
 
@@ -29,6 +30,11 @@ public class UserEntity implements User {
 
     public int getID() {
         return ID;
+    }
+
+    @Override
+    public boolean isStudent() {
+        return isStudent;
     }
 
     public void setID(int ID) {

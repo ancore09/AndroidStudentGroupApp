@@ -13,6 +13,7 @@ import androidx.lifecycle.Transformations;
 
 import com.example.studentappmvvm.DataRepository;
 import com.example.studentappmvvm.model.NewEntity;
+import com.example.studentappmvvm.model.UserEntity;
 
 import java.util.List;
 
@@ -42,6 +43,10 @@ public class NewsListViewModel extends AndroidViewModel {
     public void updateNews() {
         mRepository.updateNews(); //updating news in repository
         //mRepository.postLoad();
+    }
+
+    public UserEntity getUser() {
+        return mRepository.getUser();
     }
 
 }
