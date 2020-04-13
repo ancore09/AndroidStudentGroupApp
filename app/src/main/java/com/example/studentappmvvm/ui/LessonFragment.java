@@ -9,11 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.FragmentLessonBinding;
 import com.example.studentappmvvm.model.Lesson;
 import com.example.studentappmvvm.model.LessonEntity;
+import com.example.studentappmvvm.viewmodel.LessonViewModel;
 
 public class LessonFragment extends Fragment {
 
@@ -39,6 +41,14 @@ public class LessonFragment extends Fragment {
         les.setTheme(args[4]);
 
         mBinding.setLesson(les);
+
+        final LessonViewModel viewModel = new ViewModelProvider(requireActivity()).get(LessonViewModel.class);
+
+        if (!viewModel.getUser().isStudent()) {
+            mBinding.homeworkLes.setOnClickListener(v -> {
+
+            });
+        }
     }
 
     public static LessonFragment forLesson(Lesson lesson) {

@@ -30,6 +30,7 @@ public class TeacherJournalFragment extends Fragment {
         mBinding.pager.setAdapter(new PagerAdapter(getChildFragmentManager(), 0, fragments));
         mBinding.tabs.setupWithViewPager(mBinding.pager);
 
+
         return mBinding.getRoot();
     }
 

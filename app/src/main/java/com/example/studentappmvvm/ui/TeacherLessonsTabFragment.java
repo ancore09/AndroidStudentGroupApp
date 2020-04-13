@@ -60,6 +60,10 @@ public class TeacherLessonsTabFragment extends Fragment {
             Editable query = mBinding.lessonsSearchBox.getText();
             viewModel.setQuery(query);
         });
+
+        mBinding.floatingActionButton.setOnClickListener(v -> {
+            new LessonAdditionDialogFragment().show(getChildFragmentManager(), "dialog");
+        });
         subscribeUI(viewModel.getLessons());
     }
 
