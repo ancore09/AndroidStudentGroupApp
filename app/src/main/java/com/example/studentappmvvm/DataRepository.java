@@ -7,6 +7,7 @@ import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.model.GroupingEntity;
 import com.example.studentappmvvm.model.InformingEntity;
+import com.example.studentappmvvm.model.Lesson;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberDataEntity;
@@ -51,6 +52,8 @@ public class DataRepository {
     private static DataRepository sInstance;
     private MutableLiveData<List<NewEntity>> mObservableNews;
     private MutableLiveData<List<LessonEntity>> mObservableLessons;
+    private MutableLiveData<List<UserEntity>> mObservableUsers;
+    private MutableLiveData<List<Mark>> mObservableMarks = new MutableLiveData<>();;
     private MutableLiveData<List<MessageEntity>> mObservableMessages;
     private MutableLiveData<List<GroupEntity>> mGroups = new MutableLiveData<>();
     private UserEntity mUser;
@@ -89,6 +92,10 @@ public class DataRepository {
 
     public void postLoadJournal() {
         mObservableLessons = loadJournal(getGroupIds());
+    }
+
+    public void postLoadtable() {
+        mObservableMarks = loadTable();
     }
 
     public void postLoadMessages(String room) {
@@ -432,11 +439,90 @@ public class DataRepository {
         return data;
     } //loading/updating journal(lessons) and marks from server
 
+    public MutableLiveData<List<Mark>> loadTable() {
+        MutableLiveData<List<Mark>> data = new MutableLiveData<>();
+
+        ws.getEvaluation(mUser.getLogin()).enqueue(new Callback<List<EvaluationEntity>>() {
+            @Override
+            public void onResponse(Call<List<EvaluationEntity>> call, Response<List<EvaluationEntity>> responseEvaliation) {
+                int[] ids = new int[responseEvaliation.body().size()];
+                for (int i = 0; i < ids.length; i++) {
+                    ids[i] = responseEvaliation.body().get(i).getLessonID();
+                }
+                ws.getMarks(mUser.getLogin(), ids).enqueue(new Callback<List<Mark>>() {
+                    @Override
+                    public void onResponse(Call<List<Mark>> call, Response<List<Mark>> responseMark) {
+                        data.setValue(responseMark.body());
+                        responseEvaliation.body().forEach(evaluationEntity -> {
+                            mObservableLessons.getValue().forEach(lessonEntity -> {
+                                responseMark.body().forEach(mark -> {
+                                    if (evaluationEntity.getLessonID() == lessonEntity.getId() && evaluationEntity.getMarkID() == mark.getId()) {
+                                        //data.getValue().add(mark);
+                                    }
+                                });
+                            });
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Mark>> call, Throwable t) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<EvaluationEntity>> call, Throwable t) {
+
+            }
+        });
+
+        return data;
+    }
+
+    public LessonEntity postLesson(int groupId, String date, String time, String theme, String homework, String comment, Function<LessonEntity, Void> func) {
+        LessonEntity postItem = new LessonEntity();
+        func.apply(postItem);
+        /*ws.postLesson(groupId, date, theme, homework, comment, time).enqueue(new Callback<LessonEntity>() {
+            @Override
+            public void onResponse(Call<LessonEntity> call, Response<LessonEntity> response) {
+                func.apply(postItem);
+            }
+
+            @Override
+            public void onFailure(Call<LessonEntity> call, Throwable t) {
+                func.apply(null);
+            }
+        });*/
+
+        return postItem;
+    }
+
+    public LessonEntity editLesson(int type, String body, int lessonId, Function<LessonEntity, Void> func) {
+        LessonEntity editItem = new LessonEntity();
+
+        ws.editLesson(type, body, lessonId).enqueue(new Callback<LessonEntity>() {
+            @Override
+            public void onResponse(Call<LessonEntity> call, Response<LessonEntity> response) {
+                func.apply(editItem);
+            }
+
+            @Override
+            public void onFailure(Call<LessonEntity> call, Throwable t) {
+                func.apply(null);
+            }
+        });
+        return editItem;
+    }
+
     public MutableLiveData<List<NewEntity>> getNews() {
         return mObservableNews;
     }
     public MutableLiveData<List<LessonEntity>> getLessons() {
         return mObservableLessons;
+    }
+    public MutableLiveData<List<Mark>> getMarks() {
+        return mObservableMarks;
     }
     public MutableLiveData<List<MessageEntity>> getMessages() {
         return mObservableMessages;

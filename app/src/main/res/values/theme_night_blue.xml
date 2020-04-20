@@ -20,6 +20,13 @@
 
         <item name="android:itemTextAppearance">@style/itemTextStyle.MyTheme</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+
+        <!-- Style to use for Snackbars in this theme. -->
+        <item name="snackbarStyle">@style/snackbar_style</item>
+        <!-- Style to use for action button within a Snackbar in this theme. -->
+        <item name="snackbarButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Snackbar</item>
+        <!-- Style to use for message text within a Snackbar in this theme. -->
+        <item name="snackbarTextViewStyle">@style/snackbar_text</item>
     </style>
 
 </resources>

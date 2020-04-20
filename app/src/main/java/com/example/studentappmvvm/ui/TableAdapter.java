@@ -11,6 +11,7 @@ import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.model.CellModel;
 import com.example.studentappmvvm.model.ColumnHeaderModel;
 import com.example.studentappmvvm.model.LessonEntity;
+import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.RowHeaderModel;
 
 import java.util.List;
@@ -95,9 +96,9 @@ public class TableAdapter extends AbstractTableAdapter<ColumnHeaderModel, RowHea
         return LayoutInflater.from(mContext).inflate(R.layout.tableview_corner_layout, null, false);
     }
 
-    public void setUserList(List<LessonEntity> lessonEntities) {
+    public void setUserList(List<Mark> markList, List<LessonEntity> lessonEntities) {
         // Generate the lists that are used to TableViewAdapter
-        myTableViewModel.generateListForTableView(lessonEntities);
+        myTableViewModel.generateListForTableView(markList, lessonEntities);
 
         // Now we got what we need to show on TableView.
         setAllItems(myTableViewModel.getColumHeaderModeList(), myTableViewModel.getRowHeaderModelList(), myTableViewModel.getCellModelList());

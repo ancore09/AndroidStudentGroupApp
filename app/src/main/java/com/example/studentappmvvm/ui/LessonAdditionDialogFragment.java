@@ -8,8 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.studentappmvvm.R;
+import com.example.studentappmvvm.viewmodel.LessonAdditionViewModel;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class LessonAdditionDialogFragment extends DialogFragment {
 
@@ -28,5 +32,29 @@ public class LessonAdditionDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        LessonAdditionViewModel viewModel = new ViewModelProvider(requireActivity()).get(LessonAdditionViewModel.class);
+
+        TextInputEditText group = getView().findViewById(R.id.input_group);
+        TextInputEditText date = getView().findViewById(R.id.input_date);
+        TextInputEditText time = getView().findViewById(R.id.input_time);
+        TextInputEditText theme = getView().findViewById(R.id.input_theme);
+        TextInputEditText homework = getView().findViewById(R.id.input_homework);
+        TextInputEditText comment = getView().findViewById(R.id.input_comment);
+        getView().findViewById(R.id.btn_post).setOnClickListener(v -> {
+            viewModel.postLesson(group.getText().toString(), date.getText().toString(), time.getText().toString(), theme.getText().toString(), homework.getText().toString(), comment.getText().toString(), lessonEntity -> {
+                if (lessonEntity != null) {
+                    dismiss();
+                    showSnackbar("Lesson posted", requireActivity().findViewById(R.id.place_holder), ((TeacherAppActivity) requireActivity()).navView);
+                } else {
+                    showSnackbar("Post failed", getView().findViewById(R.id.container), null);
+                }
+                return null;
+            });
+        });
+    }
+
+    private void showSnackbar(String message,View contextView, View anchor) {
+        Snackbar.make(contextView, message, Snackbar.LENGTH_SHORT).setAnchorView(anchor).show();
     }
 }

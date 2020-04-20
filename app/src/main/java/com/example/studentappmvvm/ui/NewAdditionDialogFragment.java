@@ -66,7 +66,8 @@ public class NewAdditionDialogFragment extends DialogFragment {
                     body.getText().toString(),
                     epil.getText().toString(), newEntity -> {
                 if (newEntity != null) {
-                    this.dismiss(); return 0;
+                    this.dismiss();
+                    return 0;
                 } else {
                     return 1;
                 }

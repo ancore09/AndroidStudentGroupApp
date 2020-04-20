@@ -27,6 +27,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
@@ -69,4 +70,12 @@ public interface Webservice {
     @FormUrlEncoded
     @POST("/postNew")
     Call<NewEntity> postNew(@Query("groupid") int groupId, @Field("datedmy") String date, @Field("title") String title, @Field("body") String body, @Field("epilogue") String epil, @Field("filehash") String filehash);
+
+    @FormUrlEncoded
+    @PUT("/editLesson")
+    Call<LessonEntity> editLesson(@Query("type") int type, @Field("body") String body, @Field("lessonId") int lessonId);
+
+    @FormUrlEncoded
+    @POST("/postLesson")
+    Call<LessonEntity> postLesson(@Field("groupId") int groupId, @Field("datedmy") String date, @Field("theme") String theme, @Field("homework") String homework, @Field("comment") String comment, @Field("times") String time);
 }

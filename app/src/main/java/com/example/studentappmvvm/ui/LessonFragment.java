@@ -16,8 +16,11 @@ import com.example.studentappmvvm.databinding.FragmentLessonBinding;
 import com.example.studentappmvvm.model.Lesson;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.viewmodel.LessonViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
-public class LessonFragment extends Fragment {
+import java.util.function.Function;
+
+public class LessonFragment extends Fragment implements View.OnClickListener{
 
     private FragmentLessonBinding mBinding;
 
@@ -45,9 +48,8 @@ public class LessonFragment extends Fragment {
         final LessonViewModel viewModel = new ViewModelProvider(requireActivity()).get(LessonViewModel.class);
 
         if (!viewModel.getUser().isStudent()) {
-            mBinding.homeworkLes.setOnClickListener(v -> {
-
-            });
+            mBinding.homeworkLes.setOnClickListener(this);
+            mBinding.themeLes.setOnClickListener(this);
         }
     }
 
@@ -57,5 +59,32 @@ public class LessonFragment extends Fragment {
         args.putString("info", lesson.getId() + "#&" + lesson.getHomework() + "#&" + lesson.getMark() +"#&" + lesson.getDate() + "#&" + lesson.getTheme() );
         fr.setArguments(args);
         return fr;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.homeworkLes:
+                new LessonEditDialogFragment("Enter new hometask", "Hometask", mBinding.getLesson().getId(), s -> {
+                    mBinding.homeworkLes.setText(s);
+                    showSnackbar("Homework changed");
+                    return null;
+                }).show(getChildFragmentManager(), "dialog");
+                break;
+            case R.id.themeLes:
+                new LessonEditDialogFragment("Enter new theme", "Theme", mBinding.getLesson().getId(), s -> {
+                    mBinding.themeLes.setText(s);
+                    //View contextView = getView().findViewById(R.id.containerL);
+                    showSnackbar("Theme changed");
+                    return null;
+                }).show(getChildFragmentManager(), "dialog");
+            default:
+                break;
+        }
+    }
+
+    private void showSnackbar(String message) {
+        View contextView = ((TeacherAppActivity) requireActivity()).findViewById(R.id.place_holder);
+        Snackbar.make(contextView, message, Snackbar.LENGTH_SHORT).setAnchorView(((TeacherAppActivity) requireActivity()).navView).show();
     }
 }

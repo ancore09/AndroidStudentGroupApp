@@ -48,11 +48,11 @@ public class TableFragment extends Fragment {
         // initialize ViewModel
         vMainViewModel = new ViewModelProvider(requireActivity()).get(TableFragmentViewModel.class);
 
-        vMainViewModel.getLessons().observe(getViewLifecycleOwner(), lessonEntities -> {
+        vMainViewModel.getMarks().observe(getViewLifecycleOwner(), marks -> {
 
-            if(lessonEntities != null && lessonEntities.size()>0){
+            if(marks != null && marks.size()>0){
                 // set the list on TableFragmentViewModel
-                mTableAdapter.setUserList(lessonEntities);
+                mTableAdapter.setUserList(marks, vMainViewModel.getLessons().getValue());
                 hideProgressBar();
             }
         });
