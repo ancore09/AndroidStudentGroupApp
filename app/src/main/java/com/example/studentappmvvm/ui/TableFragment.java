@@ -1,6 +1,7 @@
 package com.example.studentappmvvm.ui;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.evrencoskun.tableview.TableView;
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.viewmodel.TableFragmentViewModel;
+import com.example.studentappmvvm.viewmodel.TableFragmentViewModelFactory;
+
+import java.util.function.Function;
 
 public class TableFragment extends Fragment {
 
@@ -46,21 +50,44 @@ public class TableFragment extends Fragment {
 
 
         // initialize ViewModel
-        vMainViewModel = new ViewModelProvider(requireActivity()).get(TableFragmentViewModel.class);
+        //vMainViewModel = new ViewModelProvider(requireActivity()).get(TableFragmentViewModel.class);
+        vMainViewModel = new ViewModelProvider(requireActivity(), new TableFragmentViewModelFactory(getActivity().getApplication(), aVoid -> {
+            subscribeUI();
+            return null;
+        })).get(TableFragmentViewModel.class);
+        subscribeUI();
 
-        vMainViewModel.getMarks().observe(getViewLifecycleOwner(), marks -> {
-
-            if(marks != null && marks.size()>0){
-                // set the list on TableFragmentViewModel
-                mTableAdapter.setUserList(marks, vMainViewModel.getLessons().getValue());
-                hideProgressBar();
-            }
-        });
 
         // Let's post a request to get the User data from a web server.
         postRequest();
 
         return view;
+    }
+
+    private void subscribeUI() {
+        vMainViewModel.getUsers().observe(getViewLifecycleOwner(), userEntities -> {
+            if(userEntities != null && userEntities.size()>0 && userEntities.get(userEntities.size()-1).getMarks() != null){
+                // set the list on TableFragmentViewModel
+                mTableAdapter.setUserList(userEntities, vMainViewModel.getLessons().getValue());
+                hideProgressBar();
+            }
+
+            /*new CountDownTimer(1000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    if(userEntities != null && userEntities.size()>0 && userEntities.get(userEntities.size()-1).getMarks() != null){
+                        // set the list on TableFragmentViewModel
+                        mTableAdapter.setUserList(userEntities, vMainViewModel.getLessons().getValue());
+                        hideProgressBar();
+                    }
+                }
+            }.start();*/
+        });
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.example.studentappmvvm.model.Lesson;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.RowHeaderModel;
+import com.example.studentappmvvm.model.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,28 +34,20 @@ public class TableViewModel {
         return list;
     }
 
-    private List<List<CellModel>> createCellModelList(List<Mark> markList, int lesAmount) {
+    private List<List<CellModel>> createCellModelList(List<UserEntity> userEntities, int lesAmount) {
         List<List<CellModel>> lists = new ArrayList<>();
 
-        Mark m =new Mark();
-        m.setId(34);
-        m.setMark("23");
-        markList.add(m);
 
         // Creating cell model list from User list for Cell Items
         // In this example, Lesson list is populated from web service
 
-        for (int i = 0; i < markList.size(); i += lesAmount) {
+        for (int i = 0; i < userEntities.size(); i++) {
 
             List<CellModel> list = new ArrayList<>();
 
             // The order should be same with column header list;
 
-            for (int j  = 0; j < lesAmount; j++) {
-                try {
-                    list.add(new CellModel("1-" + i+j, markList.get(i+j).getMark()));
-                } catch (Exception e) {}
-            }
+
 
 //            list.add(new CellModel("2-" + i, lessonEntity.getGroupName()));
 //            list.add(new CellModel("3-" + i, lessonEntity.getDate()));
@@ -62,17 +55,24 @@ public class TableViewModel {
 //            list.add(new CellModel("5-" + i, lessonEntity.getTheme()));
 
             // Add
+            for (int j = 0; j < lesAmount; j++) {
+                try {
+                    list.add(new CellModel(String.valueOf(i), userEntities.get(i).getMarks().get(j).getMark()));
+                } catch (Exception e) {
+                    list.add(new CellModel(String.valueOf(i), "N"));
+                }
+            }
             lists.add(list);
         }
 
         return lists;
     }
 
-    private List<RowHeaderModel> createRowHeaderList(int size) {
+    private List<RowHeaderModel> createRowHeaderList(List<UserEntity> userEntities) {
         List<RowHeaderModel> list = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < userEntities.size(); i++) {
             // In this example, Row headers just shows the index of the TableView List.
-            list.add(new RowHeaderModel(String.valueOf(i + 1)));
+            list.add(new RowHeaderModel(userEntities.get(i).getFirstName() + userEntities.get(i).getFirstName()));
         }
         return list;
     }
@@ -89,9 +89,9 @@ public class TableViewModel {
         return mCellModelList;
     }
 
-    public void generateListForTableView(List<Mark> markList, List<LessonEntity> lessonList) {
+    public void generateListForTableView(List<UserEntity> userEntities, List<LessonEntity> lessonList) {
         mColumnHeaderModelList = createColumnHeaderModelList(lessonList);
-        mCellModelList = createCellModelList(markList, lessonList.size());
-        mRowHeaderModelList = createRowHeaderList(markList.size());
+        mCellModelList = createCellModelList(userEntities, lessonList.size());
+        mRowHeaderModelList = createRowHeaderList(userEntities);
     }
 }

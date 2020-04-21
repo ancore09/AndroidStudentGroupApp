@@ -114,6 +114,7 @@ public class TeacherAppActivity extends AppCompatActivity {
 
             getSupportFragmentManager().beginTransaction().add(R.id.place_holder, news, NewsFragment.TAG).commit();
             //mRepository.postLoad(); //loading of all data from server
+            //mRepository.postLoadUsers(1);
         }
     }
 

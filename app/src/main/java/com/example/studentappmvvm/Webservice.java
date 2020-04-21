@@ -42,8 +42,14 @@ public interface Webservice {
     @GET("/getMessages")
     Call<List<MessageEntity>> getMessages();
 
+    @GET("/getUsers")
+    Call<List<UserEntity>> getUsers(@Query("groupid") int groupId);
+
     @GET("/getUserMarks")
     Call<List<Mark>> getMarks(@Query("login") String login, @Query("lessonsids") int[] les_ids);
+
+    @GET("/getMarks")
+    Call<List<Mark>> getMarksForTable(@Query("login") String login, @Query("groupid") int groupId);
 
     @GET("/getEvaluation")
     Call<List<EvaluationEntity>> getEvaluation(@Query("login") String login);

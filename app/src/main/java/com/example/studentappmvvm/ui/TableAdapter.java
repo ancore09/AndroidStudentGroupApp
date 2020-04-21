@@ -13,6 +13,7 @@ import com.example.studentappmvvm.model.ColumnHeaderModel;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.RowHeaderModel;
+import com.example.studentappmvvm.model.UserEntity;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class TableAdapter extends AbstractTableAdapter<ColumnHeaderModel, RowHea
     public AbstractViewHolder onCreateRowHeaderViewHolder(ViewGroup parent, int viewType) {
         // Get Row Header xml Layout
         View layout = LayoutInflater.from(mContext).inflate(R.layout.tableview_row_header_layout, parent, false);
-
+        setRowHeaderWidth(100);
         // Create a Row Header ViewHolder
         return new RowHeaderViewHolder(layout);
     }
@@ -96,9 +97,9 @@ public class TableAdapter extends AbstractTableAdapter<ColumnHeaderModel, RowHea
         return LayoutInflater.from(mContext).inflate(R.layout.tableview_corner_layout, null, false);
     }
 
-    public void setUserList(List<Mark> markList, List<LessonEntity> lessonEntities) {
+    public void setUserList(List<UserEntity> userEntities, List<LessonEntity> lessonEntities) {
         // Generate the lists that are used to TableViewAdapter
-        myTableViewModel.generateListForTableView(markList, lessonEntities);
+        myTableViewModel.generateListForTableView(userEntities, lessonEntities);
 
         // Now we got what we need to show on TableView.
         setAllItems(myTableViewModel.getColumHeaderModeList(), myTableViewModel.getRowHeaderModelList(), myTableViewModel.getCellModelList());

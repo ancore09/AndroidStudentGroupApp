@@ -7,7 +7,6 @@ import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.model.GroupingEntity;
 import com.example.studentappmvvm.model.InformingEntity;
-import com.example.studentappmvvm.model.Lesson;
 import com.example.studentappmvvm.model.LessonEntity;
 import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberDataEntity;
@@ -26,7 +25,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -94,8 +93,12 @@ public class DataRepository {
         mObservableLessons = loadJournal(getGroupIds());
     }
 
-    public void postLoadtable() {
-        mObservableMarks = loadTable();
+    public void postLoadTable(Function<Void, Void> func) {
+        mObservableUsers = loadTable(1, func);
+    }
+
+    public void postLoadUsers(int groupId) {
+        mObservableUsers = loadUsers(groupId);
     }
 
     public void postLoadMessages(String room) {
@@ -226,6 +229,24 @@ public class DataRepository {
 
             }
         });
+    }
+
+    public MutableLiveData<List<UserEntity>> loadUsers(int groupId) {
+        MutableLiveData<List<UserEntity>> data = new MutableLiveData<>();
+
+        ws.getUsers(groupId).enqueue(new Callback<List<UserEntity>>() {
+            @Override
+            public void onResponse(Call<List<UserEntity>> call, Response<List<UserEntity>> response) {
+                data.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<UserEntity>> call, Throwable t) {
+
+            }
+        });
+
+        return data;
     }
 
 
@@ -439,40 +460,45 @@ public class DataRepository {
         return data;
     } //loading/updating journal(lessons) and marks from server
 
-    public MutableLiveData<List<Mark>> loadTable() {
-        MutableLiveData<List<Mark>> data = new MutableLiveData<>();
+    public MutableLiveData<List<UserEntity>> loadTable(int groupId, Function<Void, Void> func) {
+        MutableLiveData<List<UserEntity>> data = new MutableLiveData<>();
 
-        ws.getEvaluation(mUser.getLogin()).enqueue(new Callback<List<EvaluationEntity>>() {
+        ws.getUsers(groupId).enqueue(new Callback<List<UserEntity>>() {
             @Override
-            public void onResponse(Call<List<EvaluationEntity>> call, Response<List<EvaluationEntity>> responseEvaliation) {
-                int[] ids = new int[responseEvaliation.body().size()];
-                for (int i = 0; i < ids.length; i++) {
-                    ids[i] = responseEvaliation.body().get(i).getLessonID();
-                }
-                ws.getMarks(mUser.getLogin(), ids).enqueue(new Callback<List<Mark>>() {
-                    @Override
-                    public void onResponse(Call<List<Mark>> call, Response<List<Mark>> responseMark) {
-                        data.setValue(responseMark.body());
-                        responseEvaliation.body().forEach(evaluationEntity -> {
-                            mObservableLessons.getValue().forEach(lessonEntity -> {
-                                responseMark.body().forEach(mark -> {
-                                    if (evaluationEntity.getLessonID() == lessonEntity.getId() && evaluationEntity.getMarkID() == mark.getId()) {
-                                        //data.getValue().add(mark);
-                                    }
-                                });
+            public void onResponse(Call<List<UserEntity>> call, Response<List<UserEntity>> response) {
+                data.setValue(response.body());
+
+                data.getValue().forEach(userEntity -> {
+                    ws.getMarksForTable(userEntity.getLogin(), 1).enqueue(new Callback<List<Mark>>() {
+                        @Override
+                        public void onResponse(Call<List<Mark>> call, Response<List<Mark>> responseMarks) {
+                            userEntity.setMarks(responseMarks.body());
+                            /*if (data.getValue().indexOf(userEntity) == data.getValue().size()-1) {
+                                func.apply(null);
+                            }*/
+                            AtomicBoolean loaded = new AtomicBoolean(false);
+                            data.getValue().forEach(userEntity1 -> {
+                                if (userEntity1.getMarks() == null) {
+                                    loaded.set(false);
+                                } else {
+                                    loaded.set(true);
+                                }
                             });
-                        });
-                    }
+                            if (loaded.get()) {
+                                func.apply(null);
+                            }
+                        }
 
-                    @Override
-                    public void onFailure(Call<List<Mark>> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<List<Mark>> call, Throwable t) {
 
-                    }
+                        }
+                    });
                 });
             }
 
             @Override
-            public void onFailure(Call<List<EvaluationEntity>> call, Throwable t) {
+            public void onFailure(Call<List<UserEntity>> call, Throwable t) {
 
             }
         });
@@ -483,7 +509,7 @@ public class DataRepository {
     public LessonEntity postLesson(int groupId, String date, String time, String theme, String homework, String comment, Function<LessonEntity, Void> func) {
         LessonEntity postItem = new LessonEntity();
         func.apply(postItem);
-        /*ws.postLesson(groupId, date, theme, homework, comment, time).enqueue(new Callback<LessonEntity>() {
+        ws.postLesson(groupId, date, theme, homework, comment, time).enqueue(new Callback<LessonEntity>() {
             @Override
             public void onResponse(Call<LessonEntity> call, Response<LessonEntity> response) {
                 func.apply(postItem);
@@ -493,7 +519,7 @@ public class DataRepository {
             public void onFailure(Call<LessonEntity> call, Throwable t) {
                 func.apply(null);
             }
-        });*/
+        });
 
         return postItem;
     }
@@ -529,6 +555,9 @@ public class DataRepository {
     }
     public UserEntity getUser() {
         return mUser;
+    }
+    public MutableLiveData<List<UserEntity>> getUsers() {
+        return mObservableUsers;
     }
     public MutableLiveData<List<GroupEntity>> getGroups() {
         return mGroups;
