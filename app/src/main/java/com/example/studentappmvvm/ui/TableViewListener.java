@@ -7,19 +7,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.evrencoskun.tableview.ITableView;
 import com.evrencoskun.tableview.listener.ITableViewListener;
+import com.example.studentappmvvm.model.CellModel;
+import com.example.studentappmvvm.viewmodel.TableFragmentViewModel;
 
 public class TableViewListener implements ITableViewListener {
     private static final String LOG_TAG = TableViewListener.class.getSimpleName();
 
     private ITableView mTableView;
+    private TableFragmentViewModel viewModel;
 
-    public TableViewListener(ITableView pTableView) {
+    public TableViewListener(ITableView pTableView, TableFragmentViewModel viewModel) {
         this.mTableView = pTableView;
+        this.viewModel = viewModel;
     }
 
     @Override
     public void onCellClicked(@NonNull RecyclerView.ViewHolder cellView, int column, int row) {
         Log.d(LOG_TAG, "onCellClicked has been clicked for x= " + column + " y= " + row);
+        mTableView.getAdapter().changeCellItem(column, row, new CellModel("q", 5));
+        viewModel.setMark(column, row, "5");
     }
 
     @Override

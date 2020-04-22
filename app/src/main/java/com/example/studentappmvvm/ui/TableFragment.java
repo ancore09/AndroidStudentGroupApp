@@ -52,10 +52,9 @@ public class TableFragment extends Fragment {
         // initialize ViewModel
         //vMainViewModel = new ViewModelProvider(requireActivity()).get(TableFragmentViewModel.class);
         vMainViewModel = new ViewModelProvider(requireActivity(), new TableFragmentViewModelFactory(getActivity().getApplication(), aVoid -> {
-            subscribeUI();
+            //subscribeUI();
             return null;
         })).get(TableFragmentViewModel.class);
-        subscribeUI();
 
 
         // Let's post a request to get the User data from a web server.
@@ -64,13 +63,20 @@ public class TableFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        subscribeUI();
+    }
+
     private void subscribeUI() {
         vMainViewModel.getUsers().observe(getViewLifecycleOwner(), userEntities -> {
-            if(userEntities != null && userEntities.size()>0 && userEntities.get(userEntities.size()-1).getMarks() != null){
+            //if(userEntities != null && userEntities.size()>0){
                 // set the list on TableFragmentViewModel
                 mTableAdapter.setUserList(userEntities, vMainViewModel.getLessons().getValue());
+                //mTableAdapter.getCellRecyclerViewAdapter().notifyCellDataSetChanged();
                 hideProgressBar();
-            }
+            //}
 
             /*new CountDownTimer(1000, 1000) {
                 @Override
@@ -103,7 +109,7 @@ public class TableFragment extends Fragment {
         tableView.setAdapter(mTableAdapter);
 
         // Create listener
-        tableView.setTableViewListener(new TableViewListener(tableView));
+        tableView.setTableViewListener(new TableViewListener(tableView, vMainViewModel));
     }
 
 

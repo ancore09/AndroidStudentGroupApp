@@ -93,8 +93,8 @@ public class DataRepository {
         mObservableLessons = loadJournal(getGroupIds());
     }
 
-    public void postLoadTable(Function<Void, Void> func) {
-        mObservableUsers = loadTable(1, func);
+    public void postLoadTable() {
+        mObservableUsers = loadTable(1, listMutableLiveData -> null);
     }
 
     public void postLoadUsers(int groupId) {
@@ -256,6 +256,13 @@ public class DataRepository {
             return 1;
         }, getGroupIds());
     } //updating news using callback
+
+    public void updateTable() {
+        loadTable(1, listMutableLiveData -> {
+            mObservableUsers.setValue(listMutableLiveData.getValue());
+            return null;
+        });
+    }
 
     public MutableLiveData<List<NewEntity>> loadNews(Function<MutableLiveData<List<NewEntity>>, Integer> func, int[] groupIds) {
         MutableLiveData<List<NewEntity>> data = new MutableLiveData<>();
@@ -460,7 +467,7 @@ public class DataRepository {
         return data;
     } //loading/updating journal(lessons) and marks from server
 
-    public MutableLiveData<List<UserEntity>> loadTable(int groupId, Function<Void, Void> func) {
+    public MutableLiveData<List<UserEntity>> loadTable(int groupId, Function<MutableLiveData<List<UserEntity>>, Void> func) {
         MutableLiveData<List<UserEntity>> data = new MutableLiveData<>();
 
         ws.getUsers(groupId).enqueue(new Callback<List<UserEntity>>() {
@@ -485,7 +492,7 @@ public class DataRepository {
                                 }
                             });
                             if (loaded.get()) {
-                                func.apply(null);
+                                func.apply(data);
                             }
                         }
 
@@ -539,6 +546,10 @@ public class DataRepository {
             }
         });
         return editItem;
+    }
+
+    public void setMark(int col, int row, String data) {
+        mObservableUsers.getValue().get(row).getMarks().get(col).setMark(data);
     }
 
     public MutableLiveData<List<NewEntity>> getNews() {

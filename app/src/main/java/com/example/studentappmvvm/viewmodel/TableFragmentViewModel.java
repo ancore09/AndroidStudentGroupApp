@@ -25,12 +25,22 @@ public class TableFragmentViewModel extends AndroidViewModel {
         super(application);
         mRepository = DataRepository.getInstance();
         //mRepository.postLoadUsers(1);
-        mRepository.postLoadTable(func);
+        mRepository.postLoadTable();
 
         mUsers = new MediatorLiveData<>();
         mUsers.addSource(mRepository.getUsers(), userEntities -> {
             mUsers.setValue(userEntities);
         });
+
+        updateTable();
+    }
+
+    public void updateTable() {
+        mRepository.updateTable();
+    }
+
+    public void setMark(int col, int row, String data) {
+        mRepository.setMark(col, row, data);
     }
 
     public MutableLiveData<List<UserEntity>> getUsers() {

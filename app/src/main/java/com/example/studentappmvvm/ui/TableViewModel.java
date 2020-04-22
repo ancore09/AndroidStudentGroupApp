@@ -28,7 +28,9 @@ public class TableViewModel {
 //        list.add(new ColumnHeaderModel("Theme"));
 
         lessonList.forEach(lessonEntity -> {
-            list.add(new ColumnHeaderModel(lessonEntity.getDate()));
+            if (lessonEntity.getGroupID() == 1) {
+                list.add(new ColumnHeaderModel(lessonEntity.getDate()));
+            }
         });
 
         return list;
@@ -55,7 +57,7 @@ public class TableViewModel {
 //            list.add(new CellModel("5-" + i, lessonEntity.getTheme()));
 
             // Add
-            for (int j = 0; j < lesAmount; j++) {
+            for (int j = 0; j < lesAmount-2; j++) {
                 try {
                     list.add(new CellModel(String.valueOf(i), userEntities.get(i).getMarks().get(j).getMark()));
                 } catch (Exception e) {
