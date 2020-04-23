@@ -28,9 +28,7 @@ public class TableViewModel {
 //        list.add(new ColumnHeaderModel("Theme"));
 
         lessonList.forEach(lessonEntity -> {
-            if (lessonEntity.getGroupID() == 1) {
-                list.add(new ColumnHeaderModel(lessonEntity.getDate()));
-            }
+            list.add(new ColumnHeaderModel(lessonEntity.getDate()));
         });
 
         return list;
@@ -57,7 +55,7 @@ public class TableViewModel {
 //            list.add(new CellModel("5-" + i, lessonEntity.getTheme()));
 
             // Add
-            for (int j = 0; j < lesAmount-2; j++) {
+            for (int j = 0; j < lesAmount; j++) {
                 try {
                     list.add(new CellModel(String.valueOf(i), userEntities.get(i).getMarks().get(j).getMark()));
                 } catch (Exception e) {
@@ -73,8 +71,7 @@ public class TableViewModel {
     private List<RowHeaderModel> createRowHeaderList(List<UserEntity> userEntities) {
         List<RowHeaderModel> list = new ArrayList<>();
         for (int i = 0; i < userEntities.size(); i++) {
-            // In this example, Row headers just shows the index of the TableView List.
-            list.add(new RowHeaderModel(userEntities.get(i).getFirstName() + userEntities.get(i).getFirstName()));
+            list.add(new RowHeaderModel(userEntities.get(i).getFirstName() + " " + userEntities.get(i).getLastName()));
         }
         return list;
     }

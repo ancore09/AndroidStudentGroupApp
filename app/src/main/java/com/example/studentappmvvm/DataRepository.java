@@ -52,7 +52,6 @@ public class DataRepository {
     private MutableLiveData<List<NewEntity>> mObservableNews;
     private MutableLiveData<List<LessonEntity>> mObservableLessons;
     private MutableLiveData<List<UserEntity>> mObservableUsers;
-    private MutableLiveData<List<Mark>> mObservableMarks = new MutableLiveData<>();;
     private MutableLiveData<List<MessageEntity>> mObservableMessages;
     private MutableLiveData<List<GroupEntity>> mGroups = new MutableLiveData<>();
     private UserEntity mUser;
@@ -86,7 +85,7 @@ public class DataRepository {
     }
 
     public void postLoadNews() {
-        mObservableNews = loadNews(listMutableLiveData -> 0, getGroupIds());
+        mObservableNews = loadNews(listMutableLiveData -> null, getGroupIds());
     }
 
     public void postLoadJournal() {
@@ -136,11 +135,11 @@ public class DataRepository {
 
 
     private int[] getGroupIds() {
-        int[] groupids = new int[mGroups.getValue().size()];
-        for (int i = 0; i < groupids.length; i++) {
-            groupids[i] = mGroups.getValue().get(i).getID();
+        int[] groupIds = new int[mGroups.getValue().size()];
+        for (int i = 0; i < groupIds.length; i++) {
+            groupIds[i] = mGroups.getValue().get(i).getID();
         }
-        return groupids;
+        return groupIds;
     }
 
     public void authUser(String login, String hash, Function<UserEntity, Integer> func) {
@@ -253,18 +252,18 @@ public class DataRepository {
     public void updateNews() {
         loadNews(listMutableLiveData -> {
             mObservableNews.setValue(listMutableLiveData.getValue());
-            return 1;
+            return null;
         }, getGroupIds());
     } //updating news using callback
 
-    public void updateTable() {
-        loadTable(1, listMutableLiveData -> {
+    public void updateTable(int groupId) {
+        loadTable(groupId, listMutableLiveData -> {
             mObservableUsers.setValue(listMutableLiveData.getValue());
             return null;
         });
     }
 
-    public MutableLiveData<List<NewEntity>> loadNews(Function<MutableLiveData<List<NewEntity>>, Integer> func, int[] groupIds) {
+    public MutableLiveData<List<NewEntity>> loadNews(Function<MutableLiveData<List<NewEntity>>, Void> func, int[] groupIds) {
         MutableLiveData<List<NewEntity>> data = new MutableLiveData<>();
         ws.getNews(groupIds).enqueue(new Callback<List<NewEntity>>() {
             @Override
@@ -476,7 +475,7 @@ public class DataRepository {
                 data.setValue(response.body());
 
                 data.getValue().forEach(userEntity -> {
-                    ws.getMarksForTable(userEntity.getLogin(), 1).enqueue(new Callback<List<Mark>>() {
+                    ws.getMarksForTable(userEntity.getLogin(), groupId).enqueue(new Callback<List<Mark>>() {
                         @Override
                         public void onResponse(Call<List<Mark>> call, Response<List<Mark>> responseMarks) {
                             userEntity.setMarks(responseMarks.body());
@@ -550,6 +549,7 @@ public class DataRepository {
 
     public void setMark(int col, int row, String data) {
         mObservableUsers.getValue().get(row).getMarks().get(col).setMark(data);
+        mObservableUsers.setValue(mObservableUsers.getValue());
     }
 
     public MutableLiveData<List<NewEntity>> getNews() {
@@ -557,9 +557,6 @@ public class DataRepository {
     }
     public MutableLiveData<List<LessonEntity>> getLessons() {
         return mObservableLessons;
-    }
-    public MutableLiveData<List<Mark>> getMarks() {
-        return mObservableMarks;
     }
     public MutableLiveData<List<MessageEntity>> getMessages() {
         return mObservableMessages;

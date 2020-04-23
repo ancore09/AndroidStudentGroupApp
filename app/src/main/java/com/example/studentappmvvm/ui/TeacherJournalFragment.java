@@ -17,16 +17,26 @@ import java.util.ArrayList;
 
 public class TeacherJournalFragment extends Fragment {
 
-    TeacherFragmentJournalBinding mBinding;
+    private TeacherFragmentJournalBinding mBinding;
+
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    private TeacherLessonsTabFragment teacherLessonsTabFragment = new TeacherLessonsTabFragment();
+    private TableFragment tableFragment = new TableFragment();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        fragments.clear();
+        fragments.add(teacherLessonsTabFragment);
+        fragments.add(tableFragment);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.teacher_fragment_journal, container, false);
 
-        ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(new TeacherLessonsTabFragment());
-        fragments.add(new TableFragment());
         mBinding.pager.setAdapter(new PagerAdapter(getChildFragmentManager(), 0, fragments));
         mBinding.tabs.setupWithViewPager(mBinding.pager);
 

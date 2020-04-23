@@ -8,6 +8,7 @@ import android.widget.PopupMenu;
 import com.evrencoskun.tableview.ITableView;
 import com.evrencoskun.tableview.sort.SortState;
 import com.example.studentappmvvm.R;
+import com.example.studentappmvvm.viewmodel.TableFragmentViewModel;
 
 public class ColumnHeaderLongPressPopup extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
     private static final String LOG_TAG = ColumnHeaderLongPressPopup.class.getSimpleName();
@@ -28,14 +29,16 @@ public class ColumnHeaderLongPressPopup extends PopupMenu implements PopupMenu.O
     private ITableView m_iTableView;
     private Context mContext;
     private int mXPosition;
+    private TableFragmentViewModel viewModel;
 
     public ColumnHeaderLongPressPopup(ColumnHeaderViewHolder p_iViewHolder, ITableView
-            p_jTableView) {
+            p_jTableView, TableFragmentViewModel viewModel) {
         super(p_iViewHolder.itemView.getContext(), p_iViewHolder.itemView);
         this.m_iViewHolder = p_iViewHolder;
         this.m_iTableView = p_jTableView;
         this.mContext = p_iViewHolder.itemView.getContext();
         this.mXPosition = m_iViewHolder.getAdapterPosition();
+        this.viewModel = viewModel;
 
         // find the view holder
         m_iViewHolder = (ColumnHeaderViewHolder) m_iTableView.getColumnHeaderRecyclerView().findViewHolderForAdapterPosition(mXPosition);
@@ -89,9 +92,15 @@ public class ColumnHeaderLongPressPopup extends PopupMenu implements PopupMenu.O
 
         switch (menuItem.getItemId()) {
             case ASCENDING:
+                m_iTableView.sortColumn(viewModel.column, SortState.UNSORTED);
+                viewModel.column = mXPosition;
+                viewModel.type = SortState.ASCENDING;
                 m_iTableView.sortColumn(mXPosition, SortState.ASCENDING);
                 break;
             case DESCENDING:
+                m_iTableView.sortColumn(viewModel.column, SortState.UNSORTED);
+                viewModel.column = mXPosition;
+                viewModel.type = SortState.DESCENDING;
                 m_iTableView.sortColumn(mXPosition, SortState.DESCENDING);
                 break;
             case ROW_HIDE:

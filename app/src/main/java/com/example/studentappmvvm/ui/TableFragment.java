@@ -1,11 +1,11 @@
 package com.example.studentappmvvm.ui;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,10 +14,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.evrencoskun.tableview.TableView;
 import com.example.studentappmvvm.R;
+import com.example.studentappmvvm.model.GroupEntity;
 import com.example.studentappmvvm.viewmodel.TableFragmentViewModel;
-import com.example.studentappmvvm.viewmodel.TableFragmentViewModelFactory;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class TableFragment extends Fragment {
 
@@ -26,7 +30,10 @@ public class TableFragment extends Fragment {
     private TableView mTableView;
     private TableAdapter mTableAdapter;
     private ProgressBar mProgressBar;
-    private TableFragmentViewModel vMainViewModel;
+    private MaterialSpinner mSpinner;
+    private TableFragmentViewModel mainViewModel;
+    private AtomicInteger currGroupId = new AtomicInteger();
+    private boolean first = true;
 
     public TableFragment() {
         // Required empty public constructor
@@ -42,23 +49,28 @@ public class TableFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_table, container, false);
 
+        mSpinner = view.findViewById(R.id.spinner);
         mProgressBar = view.findViewById(R.id.progressBar);
-
         mTableView = view.findViewById(R.id.my_TableView);
 
-        initializeTableView(mTableView);
-
-
         // initialize ViewModel
-        //vMainViewModel = new ViewModelProvider(requireActivity()).get(TableFragmentViewModel.class);
-        vMainViewModel = new ViewModelProvider(requireActivity(), new TableFragmentViewModelFactory(getActivity().getApplication(), aVoid -> {
-            //subscribeUI();
-            return null;
-        })).get(TableFragmentViewModel.class);
+        mainViewModel = new ViewModelProvider(requireActivity()).get(TableFragmentViewModel.class);
+        currGroupId.set(mainViewModel.getGroups().getValue().get(0).getID());
 
+        ArrayList<String> groupNames = mainViewModel.getGroups().getValue().stream().map(GroupEntity::getName).collect(Collectors.toCollection(ArrayList::new));
+        mSpinner.setItems(groupNames);
+        mSpinner.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view1, position, id, item) -> {
+            Toast.makeText(getActivity(), item, Toast.LENGTH_SHORT).show();
+            mainViewModel.getGroups().getValue().forEach(groupEntity -> {
+                if (groupEntity.getName().equals(item)) {
+                    currGroupId.set(groupEntity.getID());
+                }
+            });
+            mainViewModel.updateTable(currGroupId.get());
+        });
 
-        // Let's post a request to get the User data from a web server.
-        postRequest();
+        initializeTableView(mTableView);
+        showProgressBar();
 
         return view;
     }
@@ -70,13 +82,18 @@ public class TableFragment extends Fragment {
     }
 
     private void subscribeUI() {
-        vMainViewModel.getUsers().observe(getViewLifecycleOwner(), userEntities -> {
-            //if(userEntities != null && userEntities.size()>0){
+        mainViewModel.getUsers().observe(getViewLifecycleOwner(), userEntities -> {
+            if(userEntities != null && userEntities.size()>0){
                 // set the list on TableFragmentViewModel
-                mTableAdapter.setUserList(userEntities, vMainViewModel.getLessons().getValue());
-                //mTableAdapter.getCellRecyclerViewAdapter().notifyCellDataSetChanged();
+                mTableAdapter.setUserList(userEntities, mainViewModel.getLessons().getValue().stream().filter(lessonEntity -> {
+                    if (lessonEntity.getGroupID() == currGroupId.get()) {
+                        return true;
+                    }
+                    return false;
+                }).collect(Collectors.toList()));
+                mTableView.sortColumn(mainViewModel.column, mainViewModel.type);
                 hideProgressBar();
-            //}
+            }
 
             /*new CountDownTimer(1000, 1000) {
                 @Override
@@ -109,14 +126,8 @@ public class TableFragment extends Fragment {
         tableView.setAdapter(mTableAdapter);
 
         // Create listener
-        tableView.setTableViewListener(new TableViewListener(tableView, vMainViewModel));
+        tableView.setTableViewListener(new TableViewListener(tableView, mainViewModel, getActivity(), getChildFragmentManager()));
     }
-
-
-    private void postRequest(){
-        showProgressBar();
-    }
-
 
     public void showProgressBar() {
         mProgressBar.setVisibility(View.VISIBLE);

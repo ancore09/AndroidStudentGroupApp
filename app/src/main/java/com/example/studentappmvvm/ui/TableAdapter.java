@@ -79,7 +79,6 @@ public class TableAdapter extends AbstractTableAdapter<ColumnHeaderModel, RowHea
     public AbstractViewHolder onCreateRowHeaderViewHolder(ViewGroup parent, int viewType) {
         // Get Row Header xml Layout
         View layout = LayoutInflater.from(mContext).inflate(R.layout.tableview_row_header_layout, parent, false);
-        setRowHeaderWidth(100);
         // Create a Row Header ViewHolder
         return new RowHeaderViewHolder(layout);
     }

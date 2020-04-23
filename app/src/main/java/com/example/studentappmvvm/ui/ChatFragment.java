@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -75,11 +76,9 @@ public class ChatFragment extends Fragment {
         mBinding.sendbtn.setOnClickListener(v -> sendMessage(mBinding.editText.getText().toString(), viewModel));
 
         List<GroupEntity> groups = viewModel.getGroups().getValue();
-        ArrayList<String> groupIds = new ArrayList<>();
+        ArrayList<String> groupNames = groups.stream().map(GroupEntity::getName).collect(Collectors.toCollection(ArrayList::new));
 
-        groups.forEach(groupEntity -> groupIds.add(groupEntity.getName()));
-
-        mBinding.spinner.setItems(groupIds);
+        mBinding.spinner.setItems(groupNames);
         mBinding.spinner.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view1, position, id, item) -> viewModel.changeGroupChat(item));
 
         mBinding.attachbtn.setOnClickListener(v -> {

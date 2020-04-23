@@ -46,6 +46,11 @@ public class TeacherNewsFragment extends Fragment {
         }
     }; //swipe to left on item in recyclerview callback
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

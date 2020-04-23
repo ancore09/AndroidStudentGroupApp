@@ -118,6 +118,13 @@ public class TeacherAppActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (curr instanceof LessonFragment) {
+            super.onBackPressed();
+        }
+    }
+
     public void performTransition(Fragment next, Fragment fr) {
         if (isDestroyed()) {
             return;
@@ -126,28 +133,25 @@ public class TeacherAppActivity extends AppCompatActivity {
         curr = next;
 
 
-        Fragment nextFragment = next;
-        Fragment previousFragment = fr;
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         Fade exitFade = new Fade();
         exitFade.setDuration(FADE_DEFAULT_TIME);
-        previousFragment.setExitTransition(exitFade);
+        fr.setExitTransition(exitFade);
 
         TransitionSet enterTransitionSet = new TransitionSet();
         enterTransitionSet.addTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.move));
         enterTransitionSet.setDuration(MOVE_DEFAULT_TIME);
         enterTransitionSet.setStartDelay(FADE_DEFAULT_TIME);
-        nextFragment.setSharedElementEnterTransition(enterTransitionSet);
+        next.setSharedElementEnterTransition(enterTransitionSet);
 
         Fade enterFade = new Fade();
         enterFade.setStartDelay(MOVE_DEFAULT_TIME + FADE_DEFAULT_TIME);
         enterFade.setDuration(FADE_DEFAULT_TIME);
-        nextFragment.setEnterTransition(enterFade);
+        next.setEnterTransition(enterFade);
 
-        fragmentTransaction.addSharedElement(previousFragment.requireView().findViewById(R.id.containerL), previousFragment.getView().findViewById(R.id.containerL).getTransitionName());
-        fragmentTransaction.addToBackStack("transition").replace(R.id.place_holder, nextFragment).commitAllowingStateLoss();
+        fragmentTransaction.addSharedElement(fr.requireView().findViewById(R.id.containerL), fr.getView().findViewById(R.id.containerL).getTransitionName());
+        fragmentTransaction.addToBackStack("transition").replace(R.id.place_holder, next).commitAllowingStateLoss();
     } //transition with fade in/out animation between two fragments
 
     public void simpleShowFragment(Fragment fragment) {
