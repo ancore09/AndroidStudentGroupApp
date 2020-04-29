@@ -33,7 +33,6 @@ public class TableFragment extends Fragment {
     private MaterialSpinner mSpinner;
     private TableFragmentViewModel mainViewModel;
     private AtomicInteger currGroupId = new AtomicInteger();
-    private boolean first = true;
 
     public TableFragment() {
         // Required empty public constructor
