@@ -51,11 +51,12 @@ public class AppActivity extends AppCompatActivity {
     DataRepository mRepository;
 
     NewsFragment news = new NewsFragment();
+    TestFragment test = new TestFragment();
     JournalFragment journal = new JournalFragment();
     ChatFragment chat = new ChatFragment();
     ProfileFragment profile = new ProfileFragment();
 
-    public Fragment curr = news;
+    public Fragment curr = test;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -66,7 +67,7 @@ public class AppActivity extends AppCompatActivity {
                 case R.id.navigation_news:
                     mTextMessage.setText(R.string.title_news);
                     //changeFragment(news);
-                    performTransition(news, curr);
+                    performTransition(test, curr);
                     return true;
                 case R.id.navigation_journal:
                     mTextMessage.setText(R.string.title_journal);
@@ -116,7 +117,7 @@ public class AppActivity extends AppCompatActivity {
                 }
             }); //when keyboard is open, navbar wont interfere
 
-            getSupportFragmentManager().beginTransaction().add(R.id.place_holder, news, NewsFragment.TAG).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.place_holder, test, NewsFragment.TAG).commit();
             //mRepository.postLoad(); //loading of all data from server
         }
     }

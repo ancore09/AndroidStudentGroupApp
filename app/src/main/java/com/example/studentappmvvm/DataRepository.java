@@ -2,6 +2,7 @@ package com.example.studentappmvvm;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.studentappmvvm.model.AnswerEntity;
 import com.example.studentappmvvm.model.EvaluationEntity;
 import com.example.studentappmvvm.model.FileResponse;
 import com.example.studentappmvvm.model.GroupEntity;
@@ -12,6 +13,9 @@ import com.example.studentappmvvm.model.Mark;
 import com.example.studentappmvvm.model.MemberDataEntity;
 import com.example.studentappmvvm.model.MessageEntity;
 import com.example.studentappmvvm.model.NewEntity;
+import com.example.studentappmvvm.model.QuestionEntity;
+import com.example.studentappmvvm.model.Test;
+import com.example.studentappmvvm.model.TestEntity;
 import com.example.studentappmvvm.model.UserEntity;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -54,11 +58,12 @@ public class DataRepository {
     private MutableLiveData<List<UserEntity>> mObservableUsers;
     private MutableLiveData<List<MessageEntity>> mObservableMessages;
     private MutableLiveData<List<GroupEntity>> mGroups = new MutableLiveData<>();
+    private MutableLiveData<Test> mObservableTest;
     private UserEntity mUser;
 
     private DataRepository() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.129:3000/")
+                .baseUrl("http://194.67.92.182:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -100,11 +105,16 @@ public class DataRepository {
         mObservableUsers = loadUsers(groupId);
     }
 
+    public void postLoadTest() {
+        mObservableTest = loadTest();
+    }
+
     public void postLoadMessages(String room) {
         mObservableMessages = loadMessages();
         String roomNirm = room.replace(" ", "");
         try {
-            mSocket = IO.socket("http://192.168.1.129:3000?room=" + roomNirm);
+            roomNirm = "c";
+            mSocket = IO.socket("http://194.67.92.182:3000?room=" + roomNirm);
         } catch (URISyntaxException e) {}
 
         mSocket.on("message", args -> {
@@ -338,6 +348,7 @@ public class DataRepository {
         String json = gson.toJson(messageEntity);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("mes", json);
+        room = "c";
         jsonObject.put("room", room.replace(" ", ""));
         mSocket.emit("message", jsonObject);
     }
@@ -552,6 +563,25 @@ public class DataRepository {
         mObservableUsers.setValue(mObservableUsers.getValue());
     }
 
+    public MutableLiveData<Test> loadTest() {
+        MutableLiveData<Test> data = new MutableLiveData<>();
+        TestEntity test = new TestEntity(1, "Тест");
+        ArrayList<QuestionEntity> questionEntities = new ArrayList<>();
+        questionEntities.add(new QuestionEntity(1, 1, "Сколько программистов надо, чтобы закрутить лампочку?"));
+        ArrayList<AnswerEntity> answerEntities = new ArrayList<>();
+        answerEntities.add(new AnswerEntity(1, "Один", false));
+        answerEntities.add(new AnswerEntity(2, "Два", false));
+        answerEntities.add(new AnswerEntity(3, "Четыре", false));
+        answerEntities.add(new AnswerEntity(4, "Хоть сколько не возьми, без документации не вкрутят", true));
+        questionEntities.get(0).setAnswers(answerEntities);
+
+        questionEntities.add(new QuestionEntity(2, 2, "Сколько будет 1 + 1?"));
+        questionEntities.add(new QuestionEntity(3, 3, "А 10 - 1?"));
+        test.setQuestions(questionEntities);
+        data.setValue(test);
+        return data;
+    }
+
     public MutableLiveData<List<NewEntity>> getNews() {
         return mObservableNews;
     }
@@ -570,4 +600,5 @@ public class DataRepository {
     public MutableLiveData<List<GroupEntity>> getGroups() {
         return mGroups;
     }
+    public MutableLiveData<Test> getTest() { return mObservableTest; }
 }
