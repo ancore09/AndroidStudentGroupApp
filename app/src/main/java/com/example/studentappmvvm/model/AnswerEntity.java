@@ -11,6 +11,10 @@ public class AnswerEntity {
         this.answer = answer;
     }
 
+    public int getID() {
+        return ID;
+    }
+
     public void setAnswer(String answer) {
         this.answer = answer;
     }

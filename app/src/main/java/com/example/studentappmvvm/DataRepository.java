@@ -568,15 +568,29 @@ public class DataRepository {
         TestEntity test = new TestEntity(1, "Тест");
         ArrayList<QuestionEntity> questionEntities = new ArrayList<>();
         questionEntities.add(new QuestionEntity(1, 1, "Сколько программистов надо, чтобы закрутить лампочку?"));
-        ArrayList<AnswerEntity> answerEntities = new ArrayList<>();
-        answerEntities.add(new AnswerEntity(1, "Один", false));
-        answerEntities.add(new AnswerEntity(2, "Два", false));
-        answerEntities.add(new AnswerEntity(3, "Четыре", false));
-        answerEntities.add(new AnswerEntity(4, "Хоть сколько не возьми, без документации не вкрутят", true));
-        questionEntities.get(0).setAnswers(answerEntities);
+        ArrayList<AnswerEntity> answerEntities1 = new ArrayList<>();
+        answerEntities1.add(new AnswerEntity(1, "Один", false));
+        answerEntities1.add(new AnswerEntity(2, "Два", false));
+        answerEntities1.add(new AnswerEntity(3, "Четыре", false));
+        answerEntities1.add(new AnswerEntity(4, "Хоть сколько не возьми, без документации не вкрутят", true));
+        questionEntities.get(0).setAnswers(answerEntities1);
 
         questionEntities.add(new QuestionEntity(2, 2, "Сколько будет 1 + 1?"));
+        ArrayList<AnswerEntity> answerEntities2 = new ArrayList<>();
+        answerEntities2.add(new AnswerEntity(5, "Два", false));
+        answerEntities2.add(new AnswerEntity(6, "Одиннадцать", true));
+        answerEntities2.add(new AnswerEntity(7, "11", false));
+        answerEntities2.add(new AnswerEntity(8, "null", false));
+        questionEntities.get(1).setAnswers(answerEntities2);
+
         questionEntities.add(new QuestionEntity(3, 3, "А 10 - 1?"));
+        ArrayList<AnswerEntity> answerEntities3 = new ArrayList<>();
+        answerEntities3.add(new AnswerEntity(9, "101", false));
+        answerEntities3.add(new AnswerEntity(10, "Девять", false));
+        answerEntities3.add(new AnswerEntity(11, "9", true));
+        answerEntities3.add(new AnswerEntity(12, "undefined", false));
+        questionEntities.get(2).setAnswers(answerEntities3);
+
         test.setQuestions(questionEntities);
         data.setValue(test);
         return data;
