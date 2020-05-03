@@ -12,6 +12,9 @@ import com.example.studentappmvvm.DataRepository;
 import com.example.studentappmvvm.model.Test;
 import com.example.studentappmvvm.ui.AnswerAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestViewModel extends AndroidViewModel {
     private final DataRepository mRepository;
     private final MediatorLiveData<Test> mTest;
@@ -37,6 +40,22 @@ public class TestViewModel extends AndroidViewModel {
         } else {
             currentQuestion.setValue(-1);
         }
+    }
+
+    public ArrayList<Integer> checkAnswers(List<Integer> answers) {
+        ArrayList<Integer> rightAnswers = new ArrayList<>();
+        mTest.getValue().getQuestions().forEach(questionEntity -> {
+            questionEntity.getAnswers().forEach(answerEntity -> {
+                if (answerEntity.isTrue()) {
+                    answers.forEach(integer -> {
+                        if (answerEntity.getID() == integer) {
+                            rightAnswers.add(integer);
+                        }
+                    });
+                }
+            });
+        });
+        return rightAnswers;
     }
 
     public MutableLiveData<Integer> getCurrentQuestion() {

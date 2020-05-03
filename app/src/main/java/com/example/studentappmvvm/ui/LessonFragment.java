@@ -47,6 +47,10 @@ public class LessonFragment extends Fragment implements View.OnClickListener{
 
         final LessonViewModel viewModel = new ViewModelProvider(requireActivity()).get(LessonViewModel.class);
 
+        mBinding.passTest.setOnClickListener(view1 -> {
+            ((AppActivity) requireActivity()).performTransition(new TestFragment(), this);
+        });
+
         if (!viewModel.getUser().isStudent()) {
             mBinding.homeworkLes.setOnClickListener(this);
             mBinding.themeLes.setOnClickListener(this);

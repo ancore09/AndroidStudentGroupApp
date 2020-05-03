@@ -71,7 +71,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
                 selectedAnswers.add(mAnswers.get(position).getID());
             } else {
                 if (selectedAnswers.contains(mAnswers.get(position).getID())) {
-                    selectedAnswers.remove(position);
+                    selectedAnswers.remove(Integer.valueOf(mAnswers.get(position).getID()));
                 }
             }
         });
