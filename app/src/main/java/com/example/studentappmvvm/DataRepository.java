@@ -113,7 +113,7 @@ public class DataRepository {
         mObservableMessages = loadMessages();
         String roomNirm = room.replace(" ", "");
         try {
-            roomNirm = "c";
+            //roomNirm = "c";
             mSocket = IO.socket("http://194.67.92.182:3000?room=" + roomNirm);
         } catch (URISyntaxException e) {}
 
@@ -348,7 +348,7 @@ public class DataRepository {
         String json = gson.toJson(messageEntity);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("mes", json);
-        room = "c";
+        //room = "c";
         jsonObject.put("room", room.replace(" ", ""));
         mSocket.emit("message", jsonObject);
     }
@@ -382,7 +382,17 @@ public class DataRepository {
         ws.getMessages().enqueue(new Callback<List<MessageEntity>>() {
             @Override
             public void onResponse(Call<List<MessageEntity>> call, Response<List<MessageEntity>> response) {
-                data.setValue(response.body());
+                ArrayList<MessageEntity> messageEntities = new ArrayList<>();
+                response.body().forEach(messageEntity -> {
+                    if (messageEntity.getMemberData().getName().equals(mUser.getMemberData().getName())) {
+                        messageEntity.setBelongsToCurrentUser(true);
+                        messageEntities.add(messageEntity);
+                    } else {
+                        messageEntity.setBelongsToCurrentUser(false);
+                        messageEntities.add(messageEntity);
+                    }
+                });
+                data.setValue(messageEntities);
             }
 
             @Override

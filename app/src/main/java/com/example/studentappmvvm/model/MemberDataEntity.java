@@ -3,6 +3,7 @@ package com.example.studentappmvvm.model;
 import android.graphics.Color;
 
 public class MemberDataEntity implements MemberData {
+    private int ID;
     private String nick;
     private String color;
     private String course;
@@ -20,6 +21,10 @@ public class MemberDataEntity implements MemberData {
     @Override
     public String getName() {
         return nick;
+    }
+
+    public int getID() {
+        return ID;
     }
 
     @Override
