@@ -44,7 +44,15 @@ public class MessageEntity implements Message {
 
     @Override
     public boolean hasImage() {
-        return fileHash != null;
+        if (fileHash != null) {
+            if (fileHash.isEmpty()) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 
     public void setFileHash(String fileHash) {

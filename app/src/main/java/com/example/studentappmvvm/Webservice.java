@@ -40,7 +40,7 @@ public interface Webservice {
     Call<MemberDataEntity> getMemberData(@Query("id") int id);
 
     @GET("/getMessages")
-    Call<List<MessageEntity>> getMessages();
+    Call<List<MessageEntity>> getMessages(@Query("room") String room);
 
     @GET("/getUsers")
     Call<List<UserEntity>> getUsers(@Query("groupid") int groupId);

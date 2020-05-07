@@ -110,8 +110,8 @@ public class DataRepository {
     }
 
     public void postLoadMessages(String room) {
-        mObservableMessages = loadMessages();
         String roomNirm = room.replace(" ", "");
+        mObservableMessages = loadMessages(roomNirm, listMutableLiveData -> null);
         try {
             //roomNirm = "c";
             mSocket = IO.socket("http://194.67.92.182:3000?room=" + roomNirm);
@@ -133,6 +133,11 @@ public class DataRepository {
     }
 
     public void changeRoom(String prev_id, String new_id) {
+        String roomNirm = new_id.replace(" ", "");
+        loadMessages(roomNirm, listMutableLiveData -> {
+            mObservableMessages.setValue(listMutableLiveData.getValue());
+            return null;
+        });
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("prev_id", prev_id.replace(" ", ""));
@@ -376,10 +381,10 @@ public class DataRepository {
         return name;
     } //single file/photo uploading
 
-    public MutableLiveData<List<MessageEntity>> loadMessages() {
+    public MutableLiveData<List<MessageEntity>> loadMessages(String room, Function<MutableLiveData<List<MessageEntity>>, Void> func) {
         MutableLiveData<List<MessageEntity>> data = new MutableLiveData<>();
         List<MessageEntity> failData = new ArrayList<>();
-        ws.getMessages().enqueue(new Callback<List<MessageEntity>>() {
+        ws.getMessages(room).enqueue(new Callback<List<MessageEntity>>() {
             @Override
             public void onResponse(Call<List<MessageEntity>> call, Response<List<MessageEntity>> response) {
                 ArrayList<MessageEntity> messageEntities = new ArrayList<>();
@@ -393,6 +398,7 @@ public class DataRepository {
                     }
                 });
                 data.setValue(messageEntities);
+                func.apply(data);
             }
 
             @Override

@@ -146,7 +146,7 @@ public class ChatFragment extends Fragment {
     void sendMessage(String text, ChatViewModel viewModel) {
         if (text.length() > 0) {
             mBinding.editText.getText().clear();
-            boolean btu = false;
+            boolean btu = true;
             if (text.charAt(0) == '#') {
                 btu = true;
                 text = text.replace("#", ""); //for testing purposes, messages starting with # act like a sent one, without - like a received
