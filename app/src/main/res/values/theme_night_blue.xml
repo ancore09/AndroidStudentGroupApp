@@ -14,7 +14,7 @@
         <item name="colorOnBackground">@color/white_50</item>
         <item name="colorOnSurface">@color/white_50</item>
 
-        <item name="logo">@drawable/logo_light</item>
+        <item name="logo">@drawable/iconname_light</item>
 
         <item name="fabColor">@color/blue_200</item>
 

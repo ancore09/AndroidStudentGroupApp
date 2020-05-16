@@ -588,7 +588,7 @@ public class DataRepository {
         answerEntities1.add(new AnswerEntity(1, "Один", false));
         answerEntities1.add(new AnswerEntity(2, "Два", false));
         answerEntities1.add(new AnswerEntity(3, "Четыре", false));
-        answerEntities1.add(new AnswerEntity(4, "Хоть сколько не возьми, без документации не вкрутят", true));
+        answerEntities1.add(new AnswerEntity(4, "Три", true));
         questionEntities.get(0).setAnswers(answerEntities1);
 
         questionEntities.add(new QuestionEntity(2, 2, "Сколько будет 1 + 1?"));
