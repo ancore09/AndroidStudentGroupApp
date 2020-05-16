@@ -46,13 +46,13 @@ public interface Webservice {
     Call<List<UserEntity>> getUsers(@Query("groupid") int groupId);
 
     @GET("/getUserMarks")
-    Call<List<Mark>> getMarks(@Query("login") String login, @Query("lessonsids") int[] les_ids);
+    Call<List<Mark>> getMarks(@Query("loginid") int userId, @Query("lessonsids") int[] les_ids);
 
     @GET("/getMarks")
     Call<List<Mark>> getMarksForTable(@Query("login") String login, @Query("groupid") int groupId);
 
     @GET("/getEvaluation")
-    Call<List<EvaluationEntity>> getEvaluation(@Query("login") String login);
+    Call<List<EvaluationEntity>> getEvaluation(@Query("loginid") int userId);
 
     @GET("/getInforming")
     Call<List<InformingEntity>> getInforming(@Query("groupid") int[] group_ids);

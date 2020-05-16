@@ -114,7 +114,7 @@ public class DataRepository {
         mObservableMessages = loadMessages(roomNirm, listMutableLiveData -> null);
         try {
             //roomNirm = "c";
-            mSocket = IO.socket("http://194.67.92.182:3000?room=" + roomNirm);
+            mSocket = IO.socket("http://194.67.92.182:3001?room=" + roomNirm);
         } catch (URISyntaxException e) {}
 
         mSocket.on("message", args -> {
@@ -450,14 +450,14 @@ public class DataRepository {
                     });
                 });
 
-                ws.getEvaluation(mUser.getLogin()).enqueue(new Callback<List<EvaluationEntity>>() {
+                ws.getEvaluation(mUser.getID()).enqueue(new Callback<List<EvaluationEntity>>() {
                     @Override
                     public void onResponse(Call<List<EvaluationEntity>> call, Response<List<EvaluationEntity>> responseEvaliation) {
                         int[] ids = new int[responseEvaliation.body().size()];
                         for (int i = 0; i < ids.length; i++) {
                             ids[i] = responseEvaliation.body().get(i).getLessonID();
                         }
-                        ws.getMarks(mUser.getLogin(), ids).enqueue(new Callback<List<Mark>>() {
+                        ws.getMarks(mUser.getID(), ids).enqueue(new Callback<List<Mark>>() {
                             @Override
                             public void onResponse(Call<List<Mark>> call, Response<List<Mark>> responseMark) {
                                 responseEvaliation.body().forEach(evaluationEntity -> {
