@@ -373,7 +373,7 @@ public class DataRepository {
 
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), fbody);
 
-        ws.uploadFile(body).enqueue(new Callback<FileResponse>() {
+        wsMessages.uploadFile(body).enqueue(new Callback<FileResponse>() {
             @Override
             public void onResponse(Call<FileResponse> call, Response<FileResponse> response) {
                 name.setName(response.body().getName());
