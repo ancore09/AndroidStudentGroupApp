@@ -45,6 +45,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DataRepository {
 
     private Webservice ws;
+    private Webservice wsMessages;
     private Socket mSocket;
 //    {
 //        try {
@@ -68,6 +69,12 @@ public class DataRepository {
                 .build();
 
         ws = retrofit.create(Webservice.class);
+
+        Retrofit retrofitMSG = new Retrofit.Builder()
+                .baseUrl("http://194.67.92.182:3001/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        wsMessages = retrofitMSG.create(Webservice.class);
         firstLoad();
     }
 
@@ -384,7 +391,7 @@ public class DataRepository {
     public MutableLiveData<List<MessageEntity>> loadMessages(String room, Function<MutableLiveData<List<MessageEntity>>, Void> func) {
         MutableLiveData<List<MessageEntity>> data = new MutableLiveData<>();
         List<MessageEntity> failData = new ArrayList<>();
-        ws.getMessages(room).enqueue(new Callback<List<MessageEntity>>() {
+        wsMessages.getMessages(room).enqueue(new Callback<List<MessageEntity>>() {
             @Override
             public void onResponse(Call<List<MessageEntity>> call, Response<List<MessageEntity>> response) {
                 ArrayList<MessageEntity> messageEntities = new ArrayList<>();
