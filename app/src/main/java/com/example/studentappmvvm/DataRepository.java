@@ -44,14 +44,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DataRepository {
 
+    public static String SERVER_IP = "192.168.1.129";
+
     private Webservice ws;
     private Webservice wsMessages;
     private Socket mSocket;
-//    {
-//        try {
-//            mSocket = IO.socket("http://192.168.1.129:3000?room=");
-//        } catch (URISyntaxException e) {}
-//    }
 
     private static DataRepository sInstance;
     private MutableLiveData<List<NewEntity>> mObservableNews;
@@ -64,14 +61,14 @@ public class DataRepository {
 
     private DataRepository() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://194.67.92.182:3000/")
+                .baseUrl("http://" + SERVER_IP + ":3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ws = retrofit.create(Webservice.class);
 
         Retrofit retrofitMSG = new Retrofit.Builder()
-                .baseUrl("http://194.67.92.182:3001/")
+                .baseUrl("http://" + SERVER_IP + ":3001/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         wsMessages = retrofitMSG.create(Webservice.class);
@@ -121,7 +118,7 @@ public class DataRepository {
         mObservableMessages = loadMessages(roomNirm, listMutableLiveData -> null);
         try {
             //roomNirm = "c";
-            mSocket = IO.socket("http://194.67.92.182:3001?room=" + roomNirm);
+            mSocket = IO.socket("http://" + SERVER_IP + ":3001?room=" + roomNirm);
         } catch (URISyntaxException e) {}
 
         mSocket.on("message", args -> {
@@ -129,6 +126,9 @@ public class DataRepository {
             MessageEntity msg;
             try {
                 msg = gson.fromJson(args[0].toString(), MessageEntity.class);
+                if (!msg.getMemberData().getName().equals(mUser.getMemberData().getName())) {
+                    msg.setBelongsToCurrentUser(false);
+                }
                 mObservableMessages.getValue().add(msg);
                 mObservableMessages.postValue(mObservableMessages.getValue());
             } catch (Exception e) {
@@ -509,7 +509,7 @@ public class DataRepository {
                 data.setValue(response.body());
 
                 data.getValue().forEach(userEntity -> {
-                    ws.getMarksForTable(userEntity.getLogin(), groupId).enqueue(new Callback<List<Mark>>() {
+                    ws.getMarksForTable(userEntity.getID(), groupId).enqueue(new Callback<List<Mark>>() {
                         @Override
                         public void onResponse(Call<List<Mark>> call, Response<List<Mark>> responseMarks) {
                             userEntity.setMarks(responseMarks.body());

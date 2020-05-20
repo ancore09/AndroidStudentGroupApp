@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.studentappmvvm.DataRepository;
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.MessageBinding;
 import com.example.studentappmvvm.model.Message;
@@ -77,7 +78,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         holder.binding.setMessage(mMessagesList.get(position));
         if (mMessagesList.get(position).hasImage()) {
-            String url = "http://192.168.1.129:3001/" + mMessagesList.get(position).getFileHash();
+            String url = "http://" + DataRepository.SERVER_IP + ":3001/" + mMessagesList.get(position).getFileHash();
             RequestOptions requestOptions = new RequestOptions();
             requestOptions = requestOptions.transforms(new RoundedCorners(50));
             Glide.with(fragment).load(url).error(R.drawable.circle).apply(requestOptions).into(holder.binding.imgViewt);

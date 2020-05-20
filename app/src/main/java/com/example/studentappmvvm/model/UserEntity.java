@@ -13,7 +13,7 @@ public class UserEntity implements User {
     int memberdata_ID;
     MemberDataEntity data;
     List<Mark> marks;
-    boolean isStudent = true;
+    boolean isStudent = false;
 
     public static UserEntity sInstance;
 

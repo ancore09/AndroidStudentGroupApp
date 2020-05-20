@@ -49,7 +49,7 @@ public interface Webservice {
     Call<List<Mark>> getMarks(@Query("loginid") int userId, @Query("lessonsids") int[] les_ids);
 
     @GET("/getMarks")
-    Call<List<Mark>> getMarksForTable(@Query("login") String login, @Query("groupid") int groupId);
+    Call<List<Mark>> getMarksForTable(@Query("loginid") int loginId, @Query("groupid") int groupId);
 
     @GET("/getEvaluation")
     Call<List<EvaluationEntity>> getEvaluation(@Query("loginid") int userId);
