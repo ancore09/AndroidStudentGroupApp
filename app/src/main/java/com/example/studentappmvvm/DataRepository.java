@@ -44,7 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DataRepository {
 
-    public static String SERVER_IP = "192.168.1.129";
+    public static String SERVER_IP = "194.67.92.182";
 
     private Webservice ws;
     private Webservice wsMessages;
