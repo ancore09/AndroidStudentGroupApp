@@ -25,6 +25,7 @@ import androidx.transition.TransitionManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.studentappmvvm.DataRepository;
 import com.example.studentappmvvm.R;
 import com.example.studentappmvvm.databinding.FragmentChatBinding;
 import com.example.studentappmvvm.model.FileResponse;
@@ -106,7 +107,7 @@ public class ChatFragment extends Fragment {
             cursor.close();
 
             viewModel.uploadFile(filePath, fileResponse -> {
-                String url = "http://192.168.1.129:3000/" + fileResponse.getName();
+                String url = "http://" + DataRepository.SERVER_IP + ":3001/" + fileResponse.getName();
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions = requestOptions.transforms(new RoundedCorners(30));
                 Glide.with(this).load(url).error(R.drawable.circle).apply(requestOptions).into(mBinding.imgView);

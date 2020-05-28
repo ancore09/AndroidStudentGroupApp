@@ -89,7 +89,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewViewHolder>
         holder.binding.setNewitem(mNewsList.get(position));
         if (mNewsList.get(position).hasImage()) {
             String url = "http://" + DataRepository.SERVER_IP + ":3001/" + mNewsList.get(position).getFileHash();
-            Glide.with(fragment).load(url).error(R.drawable.circle).into(holder.binding.imgView);
+            Glide.with(fragment).load(url).error(R.drawable.bob).into(holder.binding.imgView);
         }
         holder.binding.cardView.setOnClickListener(view -> {
             if (holder.binding.expandableLayout.getVisibility() == View.GONE) {
