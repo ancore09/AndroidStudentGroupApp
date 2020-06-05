@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         sharedPreferences = getSharedPreferences("StudentApp", MODE_PRIVATE);
 
+        // auto login if there was another success login before
 //        if (sharedPreferences.getInt("id", -1) != -1) { //if user has entered the app once, he doesn't have to log in manually again
 //            mUser.setID(sharedPreferences.getInt("id", -1));
 //            mUser.setMemberdata_ID(sharedPreferences.getInt("memberDataId", -1));

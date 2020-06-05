@@ -51,7 +51,7 @@ public class ChatViewModel extends AndroidViewModel {
 
         mMessagesList.addSource(mRepository.getMessages(), messageEntities -> {
             mMessagesList.setValue(messageEntities);
-        }); //observing livedata in repository
+        }); //observing live data in repository
     }
 
     public void changeGroupChat(String i) {
@@ -70,12 +70,12 @@ public class ChatViewModel extends AndroidViewModel {
             nextMessageHasFile = false;
         }
         mRepository.sendMessage(messageEntity, room);
-    }
+    } // sending message
 
     public void uploadFile(String path, Function<FileResponse, Integer> func) {
         nextMessageFileHash = mRepository.uploadFile(path, func);
         nextMessageHasFile = true;
-    }
+    } // uploading image to server
 
     public void clearPhoto() {
         nextMessageFileHash = null;

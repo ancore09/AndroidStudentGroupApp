@@ -41,7 +41,7 @@ public class MarkEditDialogFragment extends DialogFragment {
         textView.setText("New mark");
 
         TextInputEditText editText = getView().findViewById(R.id.input_info);
-        editText.setHint("5/4/3/2/1");
+        editText.setHint("Set mark or symbol");
 
         getView().findViewById(R.id.btn_post).setOnClickListener(v -> {
            callback.onEdit(editText.getText().toString());

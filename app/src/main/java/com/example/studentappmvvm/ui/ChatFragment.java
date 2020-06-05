@@ -50,7 +50,7 @@ import static android.app.Activity.RESULT_OK;
 public class ChatFragment extends Fragment {
     public static final String TAG = "ChatFragment";
     private static int RESULT_LOAD_IMAGE = 1;
-    private int k = 0; //used as message id
+    private int k = 0; // used as message id for testing purposes
 
     private MessageAdapter mMessageAdapter;
     private FragmentChatBinding mBinding;
@@ -59,8 +59,10 @@ public class ChatFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // inflating binding with layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false);
         mMessageAdapter = new MessageAdapter(this);
+        // setting views
         mBinding.messagesList.setAdapter(mMessageAdapter);
         mBinding.setIsLoading(true);
         mBinding.imgView.setVisibility(View.GONE);
@@ -89,7 +91,7 @@ public class ChatFragment extends Fragment {
         mBinding.clearbtn.setOnClickListener(v -> {
             clearPhoto();
         });
-        subscribeUI(viewModel.getMessages());
+        subscribeUI(viewModel.getMessages()); // subscribe view to data changes
     }
 
     @Override
@@ -99,6 +101,7 @@ public class ChatFragment extends Fragment {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
 
+            // getting actual filepath of selected image
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
             Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
             cursor.moveToFirst();
@@ -106,6 +109,7 @@ public class ChatFragment extends Fragment {
             String filePath = cursor.getString(columnIndex);
             cursor.close();
 
+            // upload image to server and show inside image view when uploaded
             viewModel.uploadFile(filePath, fileResponse -> {
                 String url = "http://" + DataRepository.SERVER_IP + ":3001/" + fileResponse.getName();
                 RequestOptions requestOptions = new RequestOptions();
@@ -113,6 +117,8 @@ public class ChatFragment extends Fragment {
                 Glide.with(this).load(url).error(R.drawable.circle).apply(requestOptions).into(mBinding.imgView);
                 return 0;
             });
+
+            // show image view and background
             TransitionManager.beginDelayedTransition(mBinding.relLayout, new AutoTransition());
             mBinding.imgView.setVisibility(View.VISIBLE);
             mBinding.relLayout.setVisibility(View.VISIBLE);
@@ -131,6 +137,7 @@ public class ChatFragment extends Fragment {
 
     private void subscribeUI(MediatorLiveData<List<MessageEntity>> liveData) {
         liveData.observe(getViewLifecycleOwner(), mMessages -> {
+            // updating messages list and list view if live data has changed
             if (mMessages != null) {
                 mBinding.setIsLoading(false);
                 mMessageAdapter.setMessagesList(mMessages);
@@ -141,7 +148,7 @@ public class ChatFragment extends Fragment {
             }
             mBinding.executePendingBindings();
             mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
-        }); //observing viewmodel livedata
+        }); // observing view model live data
     }
 
     void sendMessage(String text, ChatViewModel viewModel) {
@@ -150,16 +157,17 @@ public class ChatFragment extends Fragment {
             boolean btu = true;
             if (text.charAt(0) == '#') {
                 btu = true;
-                text = text.replace("#", ""); //for testing purposes, messages starting with # act like a sent one, without - like a received
+                text = text.replace("#", ""); // for testing purposes, messages starting with # act like a sent one, without - like a received
             }
             try {
-                viewModel.sendMessage(new MessageEntity(k, text, viewModel.getUser().getMemberData(), btu)); //sending new message
+                viewModel.sendMessage(new MessageEntity(k, text, viewModel.getUser().getMemberData(), btu)); // sending new message
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             k++;
             mBinding.messagesList.scrollToPosition(mMessageAdapter.getItemCount()-1);
             TransitionManager.beginDelayedTransition(mBinding.relLayout, new AutoTransition());
+            // closing selected image view
             mBinding.imgView.setVisibility(View.GONE);
             mBinding.relLayout.setVisibility(View.GONE);
         }
@@ -168,7 +176,7 @@ public class ChatFragment extends Fragment {
     void attachPhoto() {
         Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, RESULT_LOAD_IMAGE);
-    } //starting gallery activity to choose photo
+    } // starting gallery activity to choose photo
 
     void clearPhoto() {
         viewModel.clearPhoto();
@@ -176,7 +184,8 @@ public class ChatFragment extends Fragment {
         mBinding.imgView.setVisibility(View.GONE);
         mBinding.relLayout.setVisibility(View.GONE);
         mBinding.linearLayout5.setBackgroundResource(R.color.blue_900);
-    }
+    } // detaching image from message
+
     @Override
     public void onDestroyView() {
         mBinding = null;

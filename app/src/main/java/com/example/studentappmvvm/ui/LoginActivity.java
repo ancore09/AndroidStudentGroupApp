@@ -69,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     public void login() throws NoSuchAlgorithmException {
         Log.d(TAG, "Login");
 
+        // validate entered data
 //        if (!validate()) {
 //            onLoginFailed();
 //            return;
@@ -85,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
             if (userEntity != null) {
                 _progressBar.setVisibility(View.INVISIBLE);
 
+                // if login was success put data in shared prefs for auto login in future
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 editor.putInt("id", userEntity.getID());
@@ -113,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
-                // TODO: Implement successful signup logic
+                // TODO: Implement successful sign up logic
                 this.finish();
             }
         }
@@ -134,13 +136,12 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(this, TeacherAppActivity.class);
             startActivity(intent);
         }
-    }
+    } // start corresponding activity if login was success
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
-    }
+    } // show error massage if login was failed
 
     public boolean validate() {
         boolean valid = true;
@@ -164,5 +165,5 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
-    }
+    } // validation function
 }

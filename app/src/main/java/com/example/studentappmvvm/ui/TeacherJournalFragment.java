@@ -27,6 +27,7 @@ public class TeacherJournalFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // crating fragments for pager
         fragments.clear();
         fragments.add(teacherLessonsTabFragment);
         fragments.add(tableFragment);
@@ -35,12 +36,11 @@ public class TeacherJournalFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // inflating binding with layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.teacher_fragment_journal, container, false);
-
+        // setting views
         mBinding.pager.setAdapter(new PagerAdapter(getChildFragmentManager(), 0, fragments));
         mBinding.tabs.setupWithViewPager(mBinding.pager);
-
-
         return mBinding.getRoot();
     }
 

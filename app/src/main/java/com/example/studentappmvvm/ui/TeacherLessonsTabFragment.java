@@ -30,8 +30,10 @@ public class TeacherLessonsTabFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // inflating binding with layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.teacher_fragment_tab_lessons, container, false);
 
+        // setting views
         mBinding.lessonsList.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.line));
         mBinding.refreshLayout.setOnRefreshListener(refreshLayout -> {
             refreshLayout.finishRefresh(3000);
@@ -39,11 +41,10 @@ public class TeacherLessonsTabFragment extends Fragment {
 
         mJournalAdapter = new JournalAdapter(lesson -> {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                //((AppActivity) requireActivity()).showLesson(lesson);
                 LessonFragment lessonFragment = LessonFragment.forLesson(lesson);
                 ((TeacherAppActivity) requireActivity()).performTransition(lessonFragment, this);
             }
-        }); //constructor receives callback for items to show corresponding lesson fragment
+        }); // constructor receives callback for items to show corresponding lesson fragment
         mBinding.lessonsList.setAdapter(mJournalAdapter);
         mBinding.setIsLoading(true);
 
@@ -64,10 +65,11 @@ public class TeacherLessonsTabFragment extends Fragment {
         mBinding.floatingActionButton.setOnClickListener(v -> {
             new LessonAdditionDialogFragment().show(getChildFragmentManager(), "dialog");
         });
-        subscribeUI(viewModel.getLessons());
+        subscribeUI(viewModel.getLessons()); // subscribe view to data changes
     }
 
     private void subscribeUI(LiveData<List<LessonEntity>> liveData) {
+        // updating lessons list and list view if live data has changed
         liveData.observe(getViewLifecycleOwner(), mLessons -> {
             if (mLessons != null) {
                 mBinding.setIsLoading(false);

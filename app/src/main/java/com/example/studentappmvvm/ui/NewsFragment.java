@@ -35,35 +35,12 @@ public class NewsFragment extends Fragment {
 
     private FragmentNewsBinding mBinding;
 
-//    private ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-//        @Override
-//        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//            return false;
-//        }
-//
-//        @Override
-//        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//            final int position = viewHolder.getAdapterPosition();
-//            //final New item = mNewsAdapter.mNewsList.get(position);
-//
-//            if (direction == ItemTouchHelper.LEFT) {
-//                mNewsAdapter.notifyItemRemoved(position);
-//                mNewsAdapter.mNewsList.remove(position);
-//            }
-//        }
-//    }; //swipe to left on item in recyclerview callback
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // inflating binding with layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false);
-
-        //mBinding.newsList.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.line));
-
-        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        //itemTouchHelper.attachToRecyclerView(mBinding.newsList); //attaching callback
-
+        // setting views
         mNewsAdapter = new NewsAdapter(this);
         mBinding.newsList.setAdapter(mNewsAdapter);
         mBinding.setIsLoading(true);
@@ -80,11 +57,12 @@ public class NewsFragment extends Fragment {
         mBinding.refreshLayout.setOnRefreshListener(refreshLayout -> {
             viewModel.updateNews();
             refreshLayout.finishRefresh(1000);
-        }); //listener of pulling down the recyclerview
+        }); // listener of pulling down the recyclerview
     }
 
     private void subscribeUI(MediatorLiveData<List<NewEntity>> liveData) {
         liveData.observe(getViewLifecycleOwner(), mNews -> {
+            // updating news list and list view if live data has changed
             if (mNews != null) {
                 mBinding.setIsLoading(false);
                 mNewsAdapter.setNews(mNews);
@@ -93,7 +71,7 @@ public class NewsFragment extends Fragment {
                 mBinding.setIsLoading(true);
             }
             mBinding.executePendingBindings();
-        }); //observing livedata from viewmodel
+        }); //observing live data from view model
     }
 
     @Override

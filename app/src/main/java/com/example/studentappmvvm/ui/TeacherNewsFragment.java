@@ -44,7 +44,7 @@ public class TeacherNewsFragment extends Fragment {
                 mNewsAdapter.mNewsList.remove(position);
             }
         }
-    }; //swipe to left on item in recyclerview callback
+    }; // swipe to left on item in recyclerview callback
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,10 +54,11 @@ public class TeacherNewsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // inflating binding with layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.teacher_fragment_news, container, false);
-
+        // setting views
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(mBinding.newsList); //attaching callback
+        itemTouchHelper.attachToRecyclerView(mBinding.newsList); // attaching callback
 
         mNewsAdapter = new NewsAdapter(this);
         mBinding.newsList.setAdapter(mNewsAdapter);
@@ -71,15 +72,11 @@ public class TeacherNewsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         final NewsListViewModel viewModel = new ViewModelProvider(requireActivity()).get(NewsListViewModel.class);
-        subscribeUI(viewModel.getNews());
+        subscribeUI(viewModel.getNews()); // subscribe view to data changes
 
         mBinding.floatingActionButton.setOnClickListener(v -> {
-            //((TeacherAppActivity) requireActivity()).simpleShowFragment(new NewAdditionDialogFragment());
             new NewAdditionDialogFragment().show(getChildFragmentManager(), "dialog");
-            //((TeacherAppActivity) requireActivity()).navView.setVisibility(View.GONE);
-            //((TeacherAppActivity) requireActivity()).mesBackground.setVisibility(View.GONE);
-            //((TeacherAppActivity) requireActivity()).mTextMessage.setVisibility(View.GONE);
-        });
+        }); // showing addition dialog
 
         mBinding.refreshLayout.setOnRefreshListener(refreshLayout -> {
             viewModel.updateNews();
@@ -89,6 +86,7 @@ public class TeacherNewsFragment extends Fragment {
 
     private void subscribeUI(MediatorLiveData<List<NewEntity>> liveData) {
         liveData.observe(getViewLifecycleOwner(), mNews -> {
+            // updating messages list and list view if live data has changed
             if (mNews != null) {
                 mBinding.setIsLoading(false);
                 mNewsAdapter.setNews(mNews);
@@ -97,18 +95,13 @@ public class TeacherNewsFragment extends Fragment {
                 mBinding.setIsLoading(true);
             }
             mBinding.executePendingBindings();
-        }); //observing livedata from viewmodel
+        }); //observing live data from view model
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //((TeacherAppActivity) requireActivity()).navView.setVisibility(View.VISIBLE);
-        //((TeacherAppActivity) requireActivity()).mesBackground.setVisibility(View.VISIBLE);
-        //((TeacherAppActivity) requireActivity()).mTextMessage.setVisibility(View.VISIBLE);
     }
-
-
 
     @Override
     public void onDestroyView() {

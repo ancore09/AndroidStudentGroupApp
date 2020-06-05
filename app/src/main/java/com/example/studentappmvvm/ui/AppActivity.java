@@ -36,13 +36,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
+// activity for students
 public class AppActivity extends AppCompatActivity {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = { //required permissions for chat
+    private static String[] PERMISSIONS_STORAGE = { // required permissions to select images in chat
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    private static final short MOVE_DEFAULT_TIME = 50;
+    private static final short MOVE_DEFAULT_TIME = 50; // speed of transition animation in ms;
     private static final short FADE_DEFAULT_TIME = 100;
 
 
@@ -50,11 +51,13 @@ public class AppActivity extends AppCompatActivity {
     public BottomNavigationView navView;
     DataRepository mRepository;
 
+    // base fragments
     NewsFragment news = new NewsFragment();
     JournalFragment journal = new JournalFragment();
     ChatFragment chat = new ChatFragment();
     ProfileFragment profile = new ProfileFragment();
 
+    // current fragment on screen
     public Fragment curr = news;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -114,10 +117,9 @@ public class AppActivity extends AppCompatActivity {
                 } else {
                     navView.setVisibility(View.VISIBLE);
                 }
-            }); //when keyboard is open, navbar wont interfere
+            }); //when keyboard is open, bottom navigation bar won't interfere
 
             getSupportFragmentManager().beginTransaction().add(R.id.place_holder, news, NewsFragment.TAG).commit();
-            //mRepository.postLoad(); //loading of all data from server
         }
     }
 
@@ -151,39 +153,9 @@ public class AppActivity extends AppCompatActivity {
 
         fragmentTransaction.addSharedElement(previousFragment.requireView().findViewById(R.id.containerL), previousFragment.getView().findViewById(R.id.containerL).getTransitionName());
         fragmentTransaction.addToBackStack("transition").replace(R.id.place_holder, nextFragment).commitAllowingStateLoss();
-    } //transition with fade in/out animation between two fragments
+    } // transition with fade in/out animation between two fragments
 
-//    public void performTransition(LessonFragment next, Fragment fr) {
-//        if (isDestroyed()) {
-//            return;
-//        }
-//
-//        curr = next;
-//
-//        Fragment nextFragment = next;
-//        Fragment previousFragment = fr;
-//
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//
-//        Fade exitFade = new Fade();
-//        exitFade.setDuration(FADE_DEFAULT_TIME);
-//        previousFragment.setExitTransition(exitFade);
-//
-//        TransitionSet enterTransitionSet = new TransitionSet();
-//        enterTransitionSet.addTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.move));
-//        enterTransitionSet.setDuration(MOVE_DEFAULT_TIME);
-//        enterTransitionSet.setStartDelay(FADE_DEFAULT_TIME);
-//        nextFragment.setSharedElementEnterTransition(enterTransitionSet);
-//
-//        Fade enterFade = new Fade();
-//        enterFade.setStartDelay(MOVE_DEFAULT_TIME + FADE_DEFAULT_TIME);
-//        enterFade.setDuration(FADE_DEFAULT_TIME);
-//        nextFragment.setEnterTransition(enterFade);
-//
-//        fragmentTransaction.addSharedElement(previousFragment.requireView().findViewById(R.id.containerL), previousFragment.getView().findViewById(R.id.containerL).getTransitionName());
-//        fragmentTransaction.addToBackStack("transition").replace(R.id.place_holder, nextFragment).commitAllowingStateLoss();
-//    } //same but with LessonFragment, curr variable not overridden
-
+    // other transition methods
     public void changeFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.place_holder, fragment).commit();
     }
@@ -206,7 +178,7 @@ public class AppActivity extends AppCompatActivity {
         }
 
         return sb.toString();
-    } //sha1 hash function for auth
+    } // sha1 function for hashing passwords
 
     public static void verifyStoragePermissions(Activity activity) {
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -218,5 +190,5 @@ public class AppActivity extends AppCompatActivity {
                     REQUEST_EXTERNAL_STORAGE
             );
         }
-    } //checking for permissions
+    } // checking for permissions
 }

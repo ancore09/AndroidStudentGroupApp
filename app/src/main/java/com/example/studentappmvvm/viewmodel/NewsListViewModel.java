@@ -31,7 +31,7 @@ public class NewsListViewModel extends AndroidViewModel {
         mNews = new MediatorLiveData<>();
         mNews.addSource(mRepository.getNews(), newEntities -> {
             mNews.setValue(newEntities);
-        }); //observing livedata from repository
+        }); //observing live data from repository
 
         updateNews();
     }

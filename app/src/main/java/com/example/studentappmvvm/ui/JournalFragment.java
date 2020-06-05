@@ -31,8 +31,10 @@ public class JournalFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // inflating binding with layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_journal, container, false);
 
+        // setting views
         mBinding.lessonsList.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.line));
         mBinding.refreshLayout.setOnRefreshListener(refreshLayout -> {
             refreshLayout.finishRefresh(3000);
@@ -40,7 +42,6 @@ public class JournalFragment extends Fragment {
 
         mJournalAdapter = new JournalAdapter(lesson -> {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                //((AppActivity) requireActivity()).showLesson(lesson);
                 LessonFragment lessonFragment = LessonFragment.forLesson(lesson);
                 ((AppActivity) requireActivity()).performTransition(lessonFragment, this);
             }
@@ -60,11 +61,13 @@ public class JournalFragment extends Fragment {
             Editable query = mBinding.lessonsSearchBox.getText();
             viewModel.setQuery(query);
         });
-        subscribeUI(viewModel.getLessons());
+
+        subscribeUI(viewModel.getLessons()); // subscribe view to data changes
     }
 
     private void subscribeUI(LiveData<List<LessonEntity>> liveData) {
         liveData.observe(getViewLifecycleOwner(), mLessons -> {
+            // updating lessons list and list view if live data has changed
             if (mLessons != null) {
                 mBinding.setIsLoading(false);
                 mJournalAdapter.setLessonsList(mLessons);

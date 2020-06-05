@@ -33,7 +33,7 @@ public class LessonEditDialogFragment extends DialogFragment {
         this.message = message;
         this.hint = hint;
         this.lessonID = id;
-        this.func = func;
+        this.func = func; // function to change text inside tex view after updating info
     }
 
     @Override
@@ -52,14 +52,15 @@ public class LessonEditDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // setting views
         TextView textView = getView().findViewById(R.id.messageEdit);
         textView.setText(message);
-
         TextInputEditText editText = getView().findViewById(R.id.input_info);
         editText.setHint(hint);
 
         LessonEditViewModel viewModel = new ViewModelProvider(requireActivity()).get(LessonEditViewModel.class);
 
+        // depending on hint set above corresponding piece of data of lesson will be changed
         getView().findViewById(R.id.btn_post).setOnClickListener(v -> {
             switch (hint) {
                 case "Theme":

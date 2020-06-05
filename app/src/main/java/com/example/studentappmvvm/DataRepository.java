@@ -47,7 +47,7 @@ public class DataRepository {
     public static String SERVER_IP = "194.67.92.182";
 
     private Webservice ws;
-    private Webservice wsMessages;
+    private Webservice wsMessages; // special service for connecting to socket-file server
     private Socket mSocket;
 
     private static DataRepository sInstance;
@@ -72,7 +72,7 @@ public class DataRepository {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         wsMessages = retrofitMSG.create(Webservice.class);
-        firstLoad();
+        firstLoad(); // loading user data
     }
 
     public static DataRepository getInstance() {
@@ -94,15 +94,15 @@ public class DataRepository {
     }
 
     public void postLoadNews() {
-        mObservableNews = loadNews(listMutableLiveData -> null, getGroupIds());
+        mObservableNews = loadNews(listMutableLiveData -> null, getGroupIds()); // loading news
     }
 
     public void postLoadJournal() {
-        mObservableLessons = loadJournal(getGroupIds());
+        mObservableLessons = loadJournal(getGroupIds()); // loading journal (lessons and marks)
     }
 
     public void postLoadTable() {
-        mObservableUsers = loadTable(1, listMutableLiveData -> null);
+        mObservableUsers = loadTable(1, listMutableLiveData -> null); // loading data for teacher's table
     }
 
     public void postLoadUsers(int groupId) {
@@ -114,11 +114,11 @@ public class DataRepository {
     }
 
     public void postLoadMessages(String room) {
-        String roomNirm = room.replace(" ", "");
-        mObservableMessages = loadMessages(roomNirm, listMutableLiveData -> null);
+        String roomNirm = room.replace(" ", ""); // normalizing name of group
+        mObservableMessages = loadMessages(roomNirm, listMutableLiveData -> null); // loading messages for certain room (group)
         try {
-            //roomNirm = "c";
-            mSocket = IO.socket("http://" + SERVER_IP + ":3001?room=" + roomNirm);
+            //roomNirm = "c"; // for testing with web client
+            mSocket = IO.socket("http://" + SERVER_IP + ":3001?room=" + roomNirm); // connecting to socket server
         } catch (URISyntaxException e) {}
 
         mSocket.on("message", args -> {
@@ -126,17 +126,18 @@ public class DataRepository {
             MessageEntity msg;
             try {
                 msg = gson.fromJson(args[0].toString(), MessageEntity.class);
+                // checking if message belongs to current user
                 if (!msg.getMemberData().getName().equals(mUser.getMemberData().getName())) {
                     msg.setBelongsToCurrentUser(false);
                 }
                 mObservableMessages.getValue().add(msg);
-                mObservableMessages.postValue(mObservableMessages.getValue());
+                mObservableMessages.postValue(mObservableMessages.getValue()); // triggering message list update
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }); //listener for  "message" event
+        }); // listener for "message" event
 
-        mSocket.connect();
+        mSocket.connect(); // establish actual connection to socket server
     }
 
     public void changeRoom(String prev_id, String new_id) {

@@ -35,6 +35,7 @@ public class LessonFragment extends Fragment implements View.OnClickListener{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // creating lesson entity to show it on screen
         String[] args = getArguments().getString("info").split("#&");
         LessonEntity les = new LessonEntity();
         les.setId(Integer.parseInt(args[0]));
@@ -43,14 +44,17 @@ public class LessonFragment extends Fragment implements View.OnClickListener{
         les.setDate(args[3]);
         les.setTheme(args[4]);
 
+        // set created lesson for binding
         mBinding.setLesson(les);
 
         final LessonViewModel viewModel = new ViewModelProvider(requireActivity()).get(LessonViewModel.class);
 
+        // testing functionality (in development)
         mBinding.passTest.setOnClickListener(view1 -> {
             ((AppActivity) requireActivity()).performTransition(new TestFragment(), this);
         });
 
+        // if user is teacher - set onclick for changing detail data
         if (!viewModel.getUser().isStudent()) {
             mBinding.homeworkLes.setOnClickListener(this);
             mBinding.themeLes.setOnClickListener(this);
@@ -78,7 +82,6 @@ public class LessonFragment extends Fragment implements View.OnClickListener{
             case R.id.themeLes:
                 new LessonEditDialogFragment("Enter new theme", "Theme", mBinding.getLesson().getId(), s -> {
                     mBinding.themeLes.setText(s);
-                    //View contextView = getView().findViewById(R.id.containerL);
                     showSnackbar("Theme changed");
                     return null;
                 }).show(getChildFragmentManager(), "dialog");
@@ -90,5 +93,5 @@ public class LessonFragment extends Fragment implements View.OnClickListener{
     private void showSnackbar(String message) {
         View contextView = ((TeacherAppActivity) requireActivity()).findViewById(R.id.place_holder);
         Snackbar.make(contextView, message, Snackbar.LENGTH_SHORT).setAnchorView(((TeacherAppActivity) requireActivity()).navView).show();
-    }
+    } // showing snack bar with anchor on bottom of fragment
 }
