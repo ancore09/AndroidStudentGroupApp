@@ -7,13 +7,13 @@
     android:checkedButton="@+id/rb_stereo"
     >
   <RadioButton
-      android:text="@string/stereo"
+      android:text="Stereo"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/rb_stereo"
       />
   <RadioButton
-      android:text="@string/mono"
+      android:text="Mono"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/rb_mono"

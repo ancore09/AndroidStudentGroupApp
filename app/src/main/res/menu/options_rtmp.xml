@@ -2,20 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-  <item android:title="Protocol">
-    <menu>
-      <item
-          android:title="TCP"
-          app:actionViewClass="android.widget.RadioButton"
-          android:id="@+id/rb_tcp"
-          />
-      <item
-          android:title="UDP"
-          app:actionViewClass="android.widget.RadioButton"
-          android:id="@+id/rb_udp"
-          />
-    </menu>
-  </item>
   <item android:title="Video">
     <menu>
       <item

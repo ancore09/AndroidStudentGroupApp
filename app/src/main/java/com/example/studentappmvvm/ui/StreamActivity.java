@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,9 +31,9 @@ import com.example.studentappmvvm.R;
 import com.google.android.material.navigation.NavigationView;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
-import com.pedro.rtplibrary.rtsp.RtspCamera1;
-import com.pedro.rtsp.rtsp.Protocol;
-import com.pedro.rtsp.utils.ConnectCheckerRtsp;
+import com.pedro.rtplibrary.rtmp.RtmpCamera1;
+
+import net.ossrs.rtmp.ConnectCheckerRtmp;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,25 +43,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class StreamActivity extends AppCompatActivity implements Button.OnClickListener, ConnectCheckerRtsp, SurfaceHolder.Callback,
+public class StreamActivity extends AppCompatActivity implements Button.OnClickListener, ConnectCheckerRtmp, SurfaceHolder.Callback,
         View.OnTouchListener {
 
     private Integer[] orientations = new Integer[] { 0, 90, 180, 270 };
 
-    private RtspCamera1 rtspCamera1;
+    private RtmpCamera1 rtmpCamera1;
     private SurfaceView surfaceView;
     private Button bStartStop, bRecord;
     private EditText etUrl;
     private String currentDateAndTime = "";
-    private File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-            + "/rtmp-rtsp-stream-client-java"); // directory for saving records
+    private File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/mercury-records"); // directory for saving records
 
     // options menu
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private RadioGroup rgChannel;
-    private RadioButton rbTcp, rbUdp;
     private Spinner spResolution;
     private CheckBox cbEchoCanceler, cbNoiseSuppressor, cbHardwareRotation;
     private EditText etVideoBitrate, etFps, etAudioBitrate, etSampleRate;
@@ -74,18 +71,18 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_stream);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
 
         surfaceView = findViewById(R.id.surfaceView);
         surfaceView.getHolder().addCallback(this);
         surfaceView.setOnTouchListener(this);
-        rtspCamera1 = new RtspCamera1(surfaceView, this);
+        rtmpCamera1 = new RtmpCamera1(surfaceView, this);
         prepareOptionsMenuViews();
 
         tvBitrate = findViewById(R.id.tv_bitrate);
         etUrl = findViewById(R.id.et_rtp_url);
-        etUrl.setHint("rtsp://endpoint");
+        etUrl.setHint("rtmp://endpoint");
         bStartStop = findViewById(R.id.b_start_stop);
         bStartStop.setOnClickListener(this);
         bRecord = findViewById(R.id.b_record);
@@ -97,7 +94,7 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
     private void prepareOptionsMenuViews() {
         drawerLayout = findViewById(R.id.activity_custom);
         navigationView = findViewById(R.id.nv_rtp);
-        navigationView.inflateMenu(R.menu.options_rtsp);
+        navigationView.inflateMenu(R.menu.options_rtmp);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.rtsp_streamer, R.string.rtsp_streamer) {
 
             public void onDrawerOpened(View drawerView) {
@@ -107,10 +104,10 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
 
             public void onDrawerClosed(View view) {
                 actionBarDrawerToggle.syncState();
-                if (lastVideoBitrate != null && !lastVideoBitrate.equals(etVideoBitrate.getText().toString()) && rtspCamera1.isStreaming()) {
+                if (lastVideoBitrate != null && !lastVideoBitrate.equals(etVideoBitrate.getText().toString()) && rtmpCamera1.isStreaming()) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         int bitrate = Integer.parseInt(etVideoBitrate.getText().toString()) * 1024;
-                        rtspCamera1.setVideoBitrateOnFly(bitrate);
+                        rtmpCamera1.setVideoBitrateOnFly(bitrate);
                         Toast.makeText(StreamActivity.this, "New bitrate: " + bitrate, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(StreamActivity.this, "Bitrate on fly ignored, Required min API 19", Toast.LENGTH_SHORT).show();
@@ -126,12 +123,7 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
         cbHardwareRotation = (CheckBox) navigationView.getMenu().findItem(R.id.cb_hardware_rotation).getActionView();
 
         // radio buttons
-        rbTcp = (RadioButton) navigationView.getMenu().findItem(R.id.rb_tcp).getActionView();
-        rbUdp = (RadioButton) navigationView.getMenu().findItem(R.id.rb_udp).getActionView();
         rgChannel = (RadioGroup) navigationView.getMenu().findItem(R.id.channel).getActionView();
-        rbTcp.setChecked(true);
-        rbTcp.setOnClickListener(this);
-        rbUdp.setOnClickListener(this);
 
         // spinners
         spResolution = (Spinner) navigationView.getMenu().findItem(R.id.sp_resolution).getActionView();
@@ -141,7 +133,7 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
 
         ArrayAdapter<String> resolutionAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item);
         List<String> list = new ArrayList<>();
-        for (Camera.Size size : rtspCamera1.getResolutionsBack()) {
+        for (Camera.Size size : rtmpCamera1.getResolutionsBack()) {
             list.add(size.width + "X" + size.height);
         }
         resolutionAdapter.addAll(list);
@@ -181,12 +173,12 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
                 }
                 return true;
             case R.id.microphone:
-                if (!rtspCamera1.isAudioMuted()) {
+                if (!rtmpCamera1.isAudioMuted()) {
                     item.setIcon(getResources().getDrawable(R.drawable.icon_microphone_off));
-                    rtspCamera1.disableAudio();
+                    rtmpCamera1.disableAudio();
                 } else {
                     item.setIcon(getResources().getDrawable(R.drawable.icon_microphone));
-                    rtspCamera1.enableAudio();
+                    rtmpCamera1.enableAudio();
                 }
                 return true;
             default:
@@ -198,15 +190,10 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.b_start_stop:
-                if (!rtspCamera1.isStreaming()) {
+                if (!rtmpCamera1.isStreaming()) {
                     bStartStop.setText("Stop stream");
-                    if (rbTcp.isChecked()) {
-                        rtspCamera1.setProtocol(Protocol.TCP);
-                    } else {
-                        rtspCamera1.setProtocol(Protocol.UDP);
-                    }
-                    if (rtspCamera1.isRecording() || prepareEncoders()) {
-                        rtspCamera1.startStream(etUrl.getText().toString());
+                    if (rtmpCamera1.isRecording() || prepareEncoders()) {
+                        rtmpCamera1.startStream(etUrl.getText().toString());
                     } else {
                         // If you see this all time when you start stream,
                         // it is because your encoder device don't support the configuration
@@ -218,38 +205,38 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
                     }
                 } else {
                     bStartStop.setText("Start stream");
-                    rtspCamera1.stopStream();
+                    rtmpCamera1.stopStream();
                 }
                 break;
             case R.id.b_record:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    if (!rtspCamera1.isRecording()) {
+                    if (!rtmpCamera1.isRecording()) {
                         try {
                             if (!folder.exists()) {
                                 folder.mkdir();
                             }
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                             currentDateAndTime = sdf.format(new Date());
-                            if (!rtspCamera1.isStreaming()) {
+                            if (!rtmpCamera1.isStreaming()) {
                                 if (prepareEncoders()) {
-                                    rtspCamera1.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
+                                    rtmpCamera1.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
                                     bRecord.setText("Stop record");
                                     Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(this, "Error preparing stream, This device cant do it", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                rtspCamera1.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
+                                rtmpCamera1.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
                                 bRecord.setText("Stop record");
                                 Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
                             }
                         } catch (IOException e) {
-                            rtspCamera1.stopRecord();
+                            rtmpCamera1.stopRecord();
                             bRecord.setText("Start record");
                             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        rtspCamera1.stopRecord();
+                        rtmpCamera1.stopRecord();
                         bRecord.setText("Start record");
                         Toast.makeText(this, "file " + currentDateAndTime + ".mp4 saved in " + folder.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
@@ -259,23 +246,9 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
                 break;
             case R.id.switch_camera:
                 try {
-                    rtspCamera1.switchCamera();
+                    rtmpCamera1.switchCamera();
                 } catch (CameraOpenException e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            // options menu
-            case R.id.rb_tcp:
-                if (rbUdp.isChecked()) {
-                    rbUdp.setChecked(false);
-                    rbTcp.setChecked(true);
-                }
-                break;
-            case R.id.rb_udp:
-                if (rbTcp.isChecked()) {
-                    rbTcp.setChecked(false);
-                    rbUdp.setChecked(true);
                 }
                 break;
             default:
@@ -284,35 +257,35 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
     }
 
     private boolean prepareEncoders() {
-        Camera.Size resolution = rtspCamera1.getResolutionsBack().get(spResolution.getSelectedItemPosition());
+        Camera.Size resolution = rtmpCamera1.getResolutionsBack().get(spResolution.getSelectedItemPosition());
         int width = resolution.width;
         int height = resolution.height;
-        return rtspCamera1.prepareVideo(width, height, Integer.parseInt(etFps.getText().toString()),
+        return rtmpCamera1.prepareVideo(width, height, Integer.parseInt(etFps.getText().toString()),
                 Integer.parseInt(etVideoBitrate.getText().toString()) * 1024,
                 cbHardwareRotation.isChecked(), CameraHelper.getCameraOrientation(this))
-                && rtspCamera1.prepareAudio(Integer.parseInt(etAudioBitrate.getText().toString()) * 1024,
+                && rtmpCamera1.prepareAudio(Integer.parseInt(etAudioBitrate.getText().toString()) * 1024,
                 Integer.parseInt(etSampleRate.getText().toString()),
                 rgChannel.getCheckedRadioButtonId() == R.id.rb_stereo, cbEchoCanceler.isChecked(),
                 cbNoiseSuppressor.isChecked());
     }
 
     @Override
-    public void onConnectionSuccessRtsp() {
+    public void onConnectionSuccessRtmp() {
         runOnUiThread(() -> {
             Toast.makeText(StreamActivity.this, "Connection success", Toast.LENGTH_SHORT).show();
         });
     }
 
     @Override
-    public void onConnectionFailedRtsp(String reason) {
+    public void onConnectionFailedRtmp(String reason) {
         runOnUiThread(() -> {
             Toast.makeText(StreamActivity.this, "Connection failed. " + reason, Toast.LENGTH_SHORT)
                     .show();
-            rtspCamera1.stopStream();
+            rtmpCamera1.stopStream();
             bStartStop.setText("Start stream");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                    && rtspCamera1.isRecording()) {
-                rtspCamera1.stopRecord();
+                    && rtmpCamera1.isRecording()) {
+                rtmpCamera1.stopRecord();
                 bRecord.setText("Start record");
                 Toast.makeText(StreamActivity.this,
                         "file " + currentDateAndTime + ".mp4 saved in " + folder.getAbsolutePath(),
@@ -323,19 +296,19 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
     }
 
     @Override
-    public void onNewBitrateRtsp(long bitrate) {
+    public void onNewBitrateRtmp(long bitrate) {
         runOnUiThread(() -> {
             tvBitrate.setText(bitrate + " bps");
         });
     }
 
     @Override
-    public void onDisconnectRtsp() {
+    public void onDisconnectRtmp() {
         runOnUiThread(() -> {
             Toast.makeText(StreamActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                    && rtspCamera1.isRecording()) {
-                rtspCamera1.stopRecord();
+                    && rtmpCamera1.isRecording()) {
+                rtmpCamera1.stopRecord();
                 bRecord.setText("Start record");
                 Toast.makeText(StreamActivity.this,
                         "file " + currentDateAndTime + ".mp4 saved in " + folder.getAbsolutePath(),
@@ -352,24 +325,24 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        rtspCamera1.startPreview();
+        rtmpCamera1.startPreview();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && rtspCamera1.isRecording()) {
-            rtspCamera1.stopRecord();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && rtmpCamera1.isRecording()) {
+            rtmpCamera1.stopRecord();
             bRecord.setText("Start record");
             Toast.makeText(this,
                     "file " + currentDateAndTime + ".mp4 saved in " + folder.getAbsolutePath(),
                     Toast.LENGTH_SHORT).show();
             currentDateAndTime = "";
         }
-        if (rtspCamera1.isStreaming()) {
-            rtspCamera1.stopStream();
+        if (rtmpCamera1.isStreaming()) {
+            rtmpCamera1.stopStream();
             bStartStop.setText("Start stream");
         }
-        rtspCamera1.stopPreview();
+        rtmpCamera1.stopPreview();
     }
 
     @Override
@@ -377,7 +350,7 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
         int action = event.getAction();
         if (event.getPointerCount() > 1) {
             if (action == MotionEvent.ACTION_MOVE) {
-                rtspCamera1.setZoom(event);
+                rtmpCamera1.setZoom(event);
             }
         } else {
             if (action == MotionEvent.ACTION_UP) {
@@ -388,12 +361,12 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
     }
 
     @Override
-    public void onAuthErrorRtsp() {
+    public void onAuthErrorRtmp() {
 
     }
 
     @Override
-    public void onAuthSuccessRtsp() {
+    public void onAuthSuccessRtmp() {
 
     }
 }
