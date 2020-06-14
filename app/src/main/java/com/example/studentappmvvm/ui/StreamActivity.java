@@ -128,17 +128,16 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
         // spinners
         spResolution = (Spinner) navigationView.getMenu().findItem(R.id.sp_resolution).getActionView();
 
-        ArrayAdapter<Integer> orientationAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<Integer> orientationAdapter = new ArrayAdapter<>(this, R.layout.spinner_popup_item);
         orientationAdapter.addAll(orientations);
 
-        ArrayAdapter<String> resolutionAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<String> resolutionAdapter = new ArrayAdapter<>(this, R.layout.spinner_popup_item);
         List<String> list = new ArrayList<>();
         for (Camera.Size size : rtmpCamera1.getResolutionsBack()) {
             list.add(size.width + "X" + size.height);
         }
         resolutionAdapter.addAll(list);
         spResolution.setAdapter(resolutionAdapter);
-
         // edit texts
         etVideoBitrate = (EditText) navigationView.getMenu().findItem(R.id.et_video_bitrate).getActionView();
         etFps = (EditText) navigationView.getMenu().findItem(R.id.et_fps).getActionView();

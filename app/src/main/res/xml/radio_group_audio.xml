@@ -11,11 +11,13 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/rb_stereo"
+      android:textColor="@color/white_50"
       />
   <RadioButton
       android:text="Mono"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/rb_mono"
+      android:textColor="@color/white_50"
       />
 </RadioGroup>

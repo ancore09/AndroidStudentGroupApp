@@ -14,10 +14,9 @@
         >
 
         <SurfaceView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/surfaceView"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <EditText
             android:textColor="@color/white_50"
@@ -83,6 +82,7 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@xml/options_header"
         android:id="@+id/nv_rtp"
+        android:backgroundTint="@color/blue_200"
         >
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
