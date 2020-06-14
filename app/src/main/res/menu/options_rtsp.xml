@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+  <item android:title="Protocol">
+    <menu>
+      <item
+          android:title="TCP"
+          app:actionViewClass="android.widget.RadioButton"
+          android:id="@+id/rb_tcp"
+          />
+      <item
+          android:title="UDP"
+          app:actionViewClass="android.widget.RadioButton"
+          android:id="@+id/rb_udp"
+          />
+    </menu>
+  </item>
+  <item android:title="Video">
+    <menu>
+      <item
+          android:title="Resolution"
+          app:actionViewClass="android.widget.Spinner"
+          android:id="@+id/sp_resolution"
+          />
+      <item
+          android:title="Bitrate"
+          app:actionLayout="@xml/edit_text_int"
+          android:id="@+id/et_video_bitrate"
+          />
+      <item
+          android:title="FPS"
+          app:actionLayout="@xml/edit_text_int"
+          android:id="@+id/et_fps"
+          />
+      <item
+          android:title="Hardware rotation"
+          app:actionViewClass="android.widget.CheckBox"
+          android:id="@+id/cb_hardware_rotation"
+          />
+    </menu>
+  </item>
+  <item android:title="Audio">
+    <menu>
+      <item
+          android:title="Bitrate"
+          app:actionLayout="@xml/edit_text_int"
+          android:id="@+id/et_audio_bitrate"
+          />
+      <item
+          android:title="SampleRate"
+          app:actionLayout="@xml/edit_text_int"
+          android:id="@+id/et_samplerate"
+          />
+      <item
+          android:title="Channel"
+          app:actionLayout="@xml/radio_group_audio"
+          android:id="@+id/channel"
+          />
+      <item
+          android:title="Echo Canceler"
+          app:actionViewClass="android.widget.CheckBox"
+          android:id="@+id/cb_echo_canceler"
+          />
+      <item
+          android:title="Noise Suppressor"
+          app:actionViewClass="android.widget.CheckBox"
+          android:id="@+id/cb_noise_suppressor"
+          />
+    </menu>
+  </item>
+</menu>

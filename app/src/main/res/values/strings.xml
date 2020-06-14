@@ -14,4 +14,6 @@
     <string name="clear_sorting">Clear</string>
     <string name="row_show">Show 5. Row</string>
     <string name="row_hide">Hide 5. Row</string>
+
+    <string name="rtsp_streamer">Custom RTSP</string>
 </resources>
