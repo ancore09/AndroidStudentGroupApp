@@ -29,6 +29,7 @@
         <activity android:name=".ui.SignupActivity" android:theme="@style/Theme.NightBlue"/>
         <activity android:name=".ui.TeacherAppActivity" android:theme="@style/Theme.NightBlue" />
         <activity android:name=".ui.StreamActivity" android:theme="@style/Theme.NightBlue"/>
+        <activity android:name=".ui.PlayerActivity" android:theme="@style/Theme.NightBlue" android:supportsPictureInPicture="true" android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"/>
     </application>
 
 </manifest>

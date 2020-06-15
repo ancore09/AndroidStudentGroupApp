@@ -138,6 +138,7 @@ public class StreamActivity extends AppCompatActivity implements Button.OnClickL
         }
         resolutionAdapter.addAll(list);
         spResolution.setAdapter(resolutionAdapter);
+
         // edit texts
         etVideoBitrate = (EditText) navigationView.getMenu().findItem(R.id.et_video_bitrate).getActionView();
         etFps = (EditText) navigationView.getMenu().findItem(R.id.et_fps).getActionView();

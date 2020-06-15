@@ -17,6 +17,7 @@ import com.example.studentappmvvm.model.MemberDataEntity;
 import com.example.studentappmvvm.model.UserEntity;
 import com.example.studentappmvvm.ui.AppActivity;
 import com.example.studentappmvvm.ui.LoginActivity;
+import com.example.studentappmvvm.ui.PlayerActivity;
 import com.example.studentappmvvm.ui.StreamActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
         }
-            Intent intent = new Intent(this, StreamActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         //}
     }
