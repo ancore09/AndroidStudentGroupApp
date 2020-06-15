@@ -98,33 +98,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/accountbtn" />
 
-    <Button
-        android:id="@+id/otherset1"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/streamtext"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="Other settings 1"
-        android:textAlignment="textStart"
+        android:layout_marginTop="32dp"
+        android:text="Stream"
+        android:textColor="@color/material_on_background_emphasis_high_type"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appearencebtn" />
 
     <Button
-        android:id="@+id/otherset2"
+        android:id="@+id/streamingbtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="Other settings 2"
+        android:text="streaming"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/otherset1" />
+        app:layout_constraintTop_toBottomOf="@+id/streamtext" />
+
+    <Button
+        android:id="@+id/watchbnt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="watch stream"
+        android:textAlignment="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/streamingbtn" />
 
     <Button
         android:id="@+id/otherset3"
@@ -133,12 +147,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="Other settings 3"
+        android:text="Button"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/otherset2" />
+        app:layout_constraintTop_toBottomOf="@+id/watchbnt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

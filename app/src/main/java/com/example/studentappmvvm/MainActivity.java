@@ -27,12 +27,17 @@ public class MainActivity extends AppCompatActivity {
 
     private final String[] PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
+        }
+
         sharedPreferences = getSharedPreferences("StudentApp", MODE_PRIVATE);
 
         // auto login if there was another success login before
@@ -51,16 +56,13 @@ public class MainActivity extends AppCompatActivity {
 //                return 0;
 //            });
 //        } else {
-        if (!hasPermissions(this, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
-        }
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         //}
     }
 
     private boolean hasPermissions(Context context, String... permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+        if (context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission)
                         != PackageManager.PERMISSION_GRANTED) {

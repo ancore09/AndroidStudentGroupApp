@@ -38,6 +38,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         mBinding.accountbtn.setOnClickListener(this);
         mBinding.appearencebtn.setOnClickListener(this);
+        mBinding.streamingbtn.setOnClickListener(this);
+        mBinding.watchbnt.setOnClickListener(this);
     }
 
     @Override
@@ -73,6 +75,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.appearencebtn:
                 ((AppActivity) requireActivity()).performTransition(new TableFragment(), this);
+                break;
+            case R.id.streamingbtn:
+                Intent sIntent = new Intent(getActivity().getApplicationContext(), StreamActivity.class);
+                startActivity(sIntent);
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                break;
+            case R.id.watchbnt:
+                Intent wIntent = new Intent(getActivity().getApplicationContext(), PlayerActivity.class);
+                startActivity(wIntent);
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 break;
             default:
                 break;
